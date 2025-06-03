@@ -7,31 +7,6 @@ export default function Home() {
   );
 }
 
-
-/* be careful of the actual sizes cause you can get scammed by sellers not sellign actual miniatures
-miniature golden doodles
-mypet - not reccomended
-navi through a dog website
-surcharge because they went through them
-petdog
-look facebook around for local breeders
-oliv came through arkansas
-navi had to be vaxed before on the website
-oliv had to be vaxed and spayed afterwards
-expensive - basically a child
-training them is important
-puppy chewing teething
-lots of poop and pee early on. Gotta train them.
-every 15 minutes 
-find a good vet
-breeders on facebook
-going through the website and filtering chose navi
-picked em up at the airport. 
-website SCAMMED!!!
-$2000 for navi
-$1000 for oliv
-
-
     /*
     <div className="grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20 font-[family-name:var(--font-geist-sans)]">
       <main className="flex flex-col gap-[32px] row-start-2 items-center sm:items-start">
