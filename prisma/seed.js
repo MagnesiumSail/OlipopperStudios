@@ -1,4 +1,4 @@
-import { PrismaClient } from '@prisma/client'
+const { PrismaClient } = require('../src/generated/prisma')
 const prisma = new PrismaClient()
 
 async function main() {
@@ -7,14 +7,14 @@ async function main() {
       {
         name: 'Sunset Dress',
         description: 'A flowing, sunset-inspired gown.',
-        price: 12000, // cents
+        price: 12000,
         imageUrl: '/images/sunset-dress.jpg',
       },
       {
-        name: 'Custom Pattern - Floral Top',
-        description: 'Downloadable sewing pattern for floral top.',
+        name: 'Floral Top Pattern',
+        description: 'Downloadable sewing pattern.',
         price: 2500,
-        imageUrl: '/images/floral-top-pattern.jpg',
+        imageUrl: '/images/floral-top.jpg',
       },
     ],
   })
