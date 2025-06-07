@@ -16,8 +16,22 @@ datasource db {
 model Product {
   id          Int      @id @default(autoincrement())
   name        String
-  price       Int
   description String?
+  price       Int
+  isPattern   Boolean  @default(false)
   imageUrl    String?
+  isActive    Boolean  @default(true)
   createdAt   DateTime @default(now())
+  updateAt    DateTime @updatedAt
+
+  orders Order[]
+}
+
+model Order {
+  id            Int      @id @default(autoincrement())
+  productId     Int
+  Product       Product  @relation(fields: [productId], references: [id])
+  customerEmail String
+  customNotes   String?
+  createdAt     DateTime @default(now())
 }
