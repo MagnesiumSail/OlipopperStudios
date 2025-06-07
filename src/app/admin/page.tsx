@@ -1,0 +1,4 @@
+// src/app/admin/page.tsx
+export default function AdminDashboard() {
+  return <div className="p-4 text-xl font-bold">Admin Panel</div>;
+}
