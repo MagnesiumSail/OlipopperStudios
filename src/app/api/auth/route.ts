@@ -45,6 +45,12 @@ export const authOptions: NextAuthOptions = {
       }
       return session;
     },
+    async jwt({ token, user }) {
+      if (user) {
+        token.sub = user.id; // Store user ID in the JWT token
+      }
+      return token;
+    }
   },
   secret: process.env.NEXTAUTH_SECRET,
 };
