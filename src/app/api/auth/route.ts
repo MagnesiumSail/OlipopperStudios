@@ -37,20 +37,26 @@ export const authOptions: NextAuthOptions = {
     strategy: "jwt",
   },
   callbacks: {
-    async session({ session, token }: { session: Session; token: JWT }) {
+    async jwt({ token, user }): Promise<JWT> {
+      if (user) {
+        token.sub = user.id; // Store user ID in the JWT token
+        token.role = user.role; // Store user role in the JWT token
+      }
+      return token;
+    },
+
+    async session({ session, token }: { session: Session; token: JWT }): Promise<Session> {
       if (session.user) {
         if (token.sub && session.user) {
           session.user.id = token.sub; // Ensure user ID is set in the session
         }
       }
+      if (token.role) {
+        session.user.role = token.role as string; // Ensure user role is set in the session
+      }
       return session;
     },
-    async jwt({ token, user }) {
-      if (user) {
-        token.sub = user.id; // Store user ID in the JWT token
-      }
-      return token;
-    }
+    
   },
   secret: process.env.NEXTAUTH_SECRET,
 };
