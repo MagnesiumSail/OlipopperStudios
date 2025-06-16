@@ -1,3 +1,4 @@
+// src/components/header.tsx
 import Nav from './Nav';
 
 export default function Header() {
