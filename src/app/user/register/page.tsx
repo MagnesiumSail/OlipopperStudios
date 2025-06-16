@@ -1,3 +1,4 @@
+// src/app/user/register/page.tsx
 // Sets the 'use client' directive to indicate this is a client component
 'use client';
 

@@ -1,3 +1,5 @@
+//src/app/page.tsx
+
 import Image from "next/image";
 
 async function getProducts() {
