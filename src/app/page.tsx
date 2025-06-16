@@ -1,6 +1,7 @@
 //src/app/page.tsx
 
 import Image from "next/image";
+import SessionDebug from "@/components/SessionDebug";
 
 async function getProducts() {
   const res = await fetch('http://localhost:3000/api/products', {
@@ -19,6 +20,7 @@ export default async function Home() {
   return (
     <div className="p-4">
       <h1 className="text-xl font-bold mb-4">Products</h1>
+      <SessionDebug />
       <ul className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
         {products.map((product: any) => (
           <li key={product.id} className="border p-4 rounded shadow">
