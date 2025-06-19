@@ -14,17 +14,21 @@ datasource db {
 }
 
 model Product {
-  id          Int      @id @default(autoincrement())
-  name        String
-  description String?
-  price       Int
-  isPattern   Boolean  @default(false)
-  imageUrl    String?
-  isActive    Boolean  @default(true)
-  createdAt   DateTime @default(now())
-  updateAt    DateTime @updatedAt
-
-  orders Order[]
+  id           Int            @id @default(autoincrement())
+  name         String
+  description  String?
+  price        Int
+  isPattern    Boolean        @default(false)
+  images       ProductImage[]
+  isActive     Boolean        @default(true)
+  createdAt    DateTime       @default(now())
+  updateAt     DateTime       @updatedAt
+  videoUrl     String?
+  sizeGuideId  Int?
+  sizeGuide    SizeGuide?     @relation(fields: [sizeGuideId], references: [id])
+  sizeGuideUrl String?
+  tags         String[]
+  orders       Order[]
 }
 
 model Order {
@@ -37,11 +41,36 @@ model Order {
 }
 
 model User {
-  id             String   @id @default(cuid())
-  email          String   @unique
-  password       String   // hash this if you're doing credentials-based login
-  name           String?
-  role           String   @default("user") // useful for admin access
-  createdAt      DateTime @default(now())
-  updatedAt      DateTime @updatedAt
+  id        String   @id @default(cuid())
+  email     String   @unique
+  password  String // hash this if you're doing credentials-based login
+  name      String?
+  role      String   @default("user") // useful for admin access
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model CustomRequestLog {
+  id        Int      @id @default(autoincrement())
+  customer  String
+  email     String
+  garment   String
+  status    String   @default("pending")
+  createdAt DateTime @default(now())
+}
+
+model SizeGuide {
+  id        Int       @id @default(autoincrement())
+  name      String
+  tableData Json // e.g. [["Size", "Bust", "Waist"], ["S", "34", "26"]]
+  Product   Product[]
+}
+
+model ProductImage {
+  id        Int     @id @default(autoincrement())
+  product   Product @relation(fields: [productId], references: [id])
+  productId Int
+  url       String
+  altText   String?
+  order     Int // ← optional, for ordering images
 }

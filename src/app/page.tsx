@@ -1,30 +1,44 @@
-//src/app/page.tsx
-
 import Image from "next/image";
 import SessionDebug from "@/components/SessionDebug";
 
+// Fetch products from API, including images
 async function getProducts() {
   const res = await fetch('http://localhost:3000/api/products', {
     cache: 'no-store',
-  })
+  });
 
   if (!res.ok) {
-    throw new Error('Failed to fetch products')
+    console.error('Failed to fetch products:', res.statusText);
+    throw new Error('Failed to fetch products');
   }
-  return res.json()
+
+  return res.json(); // Expected to return products with images
 }
 
-//strange ness
 export default async function Home() {
-  const products = await getProducts()
+  const products = await getProducts();
+
   return (
     <div className="p-4">
       <h1 className="text-xl font-bold mb-4">Products</h1>
       <SessionDebug />
+
       <ul className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
         {products.map((product: any) => (
           <li key={product.id} className="border p-4 rounded shadow">
-            <img src={product.imageUrl} alt={product.name} className="w-full h-40 object-cover mb-2" />
+            {/* Display first image from images array */}
+            {product.images?.length > 0 ? (
+              <img
+                src={product.images[0].url}
+                alt={product.images[0].altText || product.name}
+                className="w-full h-40 object-cover mb-2"
+              />
+            ) : (
+              <div className="w-full h-40 bg-gray-200 flex items-center justify-center text-gray-500">
+                No Image
+              </div>
+            )}
+
             <h2 className="text-lg font-semibold">{product.name}</h2>
             <p className="text-sm text-gray-600">{product.description}</p>
             <p className="font-bold">${(product.price / 100).toFixed(2)}</p>
