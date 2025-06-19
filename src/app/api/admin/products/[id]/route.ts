@@ -57,17 +57,44 @@ export async function PUT(req: NextRequest, { params }: { params: { id: string }
   try {
     const body = await req.json();
 
-    // Update the product with new data
-    const updatedProduct = await prisma.product.update({
-      where: { id: productId },
-      data: {
-        name: body.name,
-        price: body.price,
-        description: body.description,
-        imageUrl: body.imageUrl,
-        isPattern: body.isPattern,
-        isActive: body.isActive,
-      },
+    // Begin a transaction if replacing images
+    const updatedProduct = await prisma.$transaction(async (tx) => {
+      // Delete all existing images if new ones provided
+      if (Array.isArray(body.images)) {
+        await tx.productImage.deleteMany({
+          where: { productId },
+        });
+
+        for (const [index, img] of body.images.entries()) {
+          await tx.productImage.create({
+            data: {
+              productId,
+              url: img.url,
+              altText: img.altText || '',
+              order: img.order ?? index,
+            },
+          });
+        }
+      }
+
+      // Update the main product fields
+      return tx.product.update({
+        where: { id: productId },
+        data: {
+          name: body.name,
+          price: body.price,
+          description: body.description,
+          isPattern: body.isPattern,
+          isActive: body.isActive,
+          videoUrl: body.videoUrl,
+          tags: body.tags,
+          sizeGuideId: body.sizeGuideId || null,
+        },
+        include: {
+          images: true,
+          sizeGuide: true,
+        },
+      });
     });
 
     return NextResponse.json(updatedProduct);

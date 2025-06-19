@@ -1,36 +1,56 @@
-// src/app/admin/components/ProductTable.tsx
 "use client";
 
 import { useEffect, useState } from "react";
 import { useSession } from "next-auth/react";
 
-// Type for a single product entry (matching your Prisma schema)
-type Product = {
+// Updated Product type
+interface ProductImage {
+  id?: number;
+  url: string;
+  altText?: string;
+  order?: number;
+}
+
+interface Product {
   id: number;
   name: string;
   description?: string;
   price: number;
   isPattern: boolean;
-  imageUrl?: string;
   isActive: boolean;
+  videoUrl?: string;
+  tags: string[];
+  sizeGuideId?: number;
   createdAt: string;
   updateAt: string;
-};
+  images: ProductImage[];
+}
 
 export default function ProductTable() {
   const { data: session, status } = useSession();
   const [products, setProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
+  const [sizeGuides, setSizeGuides] = useState<{ id: number; name: string }[]>(
+    []
+  );
 
-  // Fetch product data on mount
   useEffect(() => {
-    const fetchProducts = async () => {
+    const fetchData = async () => {
       try {
-        const res = await fetch("/api/admin/products");
-        if (!res.ok) throw new Error("Failed to fetch products");
-        const data = await res.json();
-        setProducts(data);
+        const productsRes = await fetch("/api/admin/products");
+        if (!productsRes.ok) throw new Error("Failed to fetch products");
+
+        const guidesRes = await fetch("/api/admin/size-guides");
+        if (!guidesRes.ok) throw new Error("Failed to fetch size guides");
+
+        const [productsData, guidesData] = await Promise.all([
+          productsRes.json(),
+          guidesRes.json(),
+        ]);
+
+        setProducts(productsData);
+        setSizeGuides(guidesData);
       } catch (err: any) {
         setError(err.message);
       } finally {
@@ -38,21 +58,31 @@ export default function ProductTable() {
       }
     };
 
-    fetchProducts();
+    fetchData();
   }, []);
 
-  // Handle product deletion
   const handleDelete = async (id: number) => {
     if (!confirm("Are you sure you want to delete this product?")) return;
-
     try {
       const res = await fetch(`/api/admin/products/${id}`, {
         method: "DELETE",
       });
       if (!res.ok) throw new Error("Failed to delete product");
-
-      // Remove from local state
       setProducts((prev) => prev.filter((p) => p.id !== id));
+    } catch (err: any) {
+      alert(err.message);
+    }
+  };
+
+  const handleSave = async (product: Product) => {
+    try {
+      const res = await fetch(`/api/admin/products/${product.id}`, {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(product),
+      });
+      if (!res.ok) throw new Error("Failed to save changes");
+      alert("Product updated!");
     } catch (err: any) {
       alert(err.message);
     }
@@ -66,21 +96,22 @@ export default function ProductTable() {
       <table className="min-w-full border border-gray-300">
         <thead>
           <tr className="text-left text-sm">
-            <th className="px-4 py-2 border">ID</th>
             <th className="px-4 py-2 border">Name</th>
-            <th className="px-4 py-2 border">Price</th>
+            <th className="px-4 py-2 border">Price ($)</th>
             <th className="px-4 py-2 border">Active</th>
             <th className="px-4 py-2 border">Pattern</th>
+            <th className="px-4 py-2 border">Video</th>
+            <th className="px-4 py-2 border">Tags</th>
+            <th className="px-4 py-2 border">Size Guide</th>
             <th className="px-4 py-2 border">Actions</th>
           </tr>
         </thead>
         <tbody>
           {products.map((product) => (
             <tr key={product.id} className="text-sm hover:bg-gray-50">
-              <td className="px-4 py-2 border">{product.id}</td>
               <td className="px-4 py-2 border">
                 <input
-                  className="w-full border p-1 text-sm"
+                  className="w-full border p-1"
                   value={product.name}
                   onChange={(e) =>
                     setProducts((prev) =>
@@ -91,50 +122,119 @@ export default function ProductTable() {
                   }
                 />
               </td>
-
               <td className="px-4 py-2 border">
                 <input
-                  className="w-full border p-1 text-sm"
-                  value={(product.price / 100).toFixed(2)} // Assuming price is in cents
+                  type="number"
+                  className="w-full border p-1"
+                  value={(product.price / 100).toFixed(2)}
                   onChange={(e) =>
                     setProducts((prev) =>
                       prev.map((p) =>
-                        p.id === product.id ? { ...p, name: e.target.value } : p
+                        p.id === product.id
+                          ? {
+                              ...p,
+                              price: Math.round(
+                                parseFloat(e.target.value) * 100
+                              ),
+                            }
+                          : p
                       )
                     )
                   }
                 />
               </td>
-
-              <td className="px-4 py-2 border">
+              <td className="px-4 py-2 border text-center">
                 <input
-                  className="w-full border p-1 text-sm"
-                  value={product.isActive ? "Yes" : "No"}
+                  type="checkbox"
+                  checked={product.isActive}
                   onChange={(e) =>
                     setProducts((prev) =>
                       prev.map((p) =>
-                        p.id === product.id ? { ...p, name: e.target.value } : p
+                        p.id === product.id
+                          ? { ...p, isActive: e.target.checked }
+                          : p
                       )
                     )
                   }
                 />
               </td>
-
-              <td className="px-4 py-2 border">
+              <td className="px-4 py-2 border text-center">
                 <input
-                  className="w-full border p-1 text-sm"
-                  value={product.isPattern ? "Yes" : "No"}
+                  type="checkbox"
+                  checked={product.isPattern}
                   onChange={(e) =>
                     setProducts((prev) =>
                       prev.map((p) =>
-                        p.id === product.id ? { ...p, name: e.target.value } : p
+                        p.id === product.id
+                          ? { ...p, isPattern: e.target.checked }
+                          : p
                       )
                     )
                   }
                 />
               </td>
-
               <td className="px-4 py-2 border">
+                <input
+                  className="w-full border p-1"
+                  value={product.videoUrl || ""}
+                  onChange={(e) =>
+                    setProducts((prev) =>
+                      prev.map((p) =>
+                        p.id === product.id
+                          ? { ...p, videoUrl: e.target.value }
+                          : p
+                      )
+                    )
+                  }
+                />
+              </td>
+              <td className="px-4 py-2 border">
+                <input
+                  className="w-full border p-1"
+                  value={product.tags.join(", ")}
+                  onChange={(e) =>
+                    setProducts((prev) =>
+                      prev.map((p) =>
+                        p.id === product.id
+                          ? {
+                              ...p,
+                              tags: e.target.value
+                                .split(",")
+                                .map((tag) => tag.trim()),
+                            }
+                          : p
+                      )
+                    )
+                  }
+                />
+              </td>
+              <td className="px-4 py-2 border">
+                <select
+                  className="w-full border p-1"
+                  value={product.sizeGuideId || ""}
+                  onChange={(e) =>
+                    setProducts((prev) =>
+                      prev.map((p) =>
+                        p.id === product.id
+                          ? {
+                              ...p,
+                              sizeGuideId:
+                                parseInt(e.target.value) || undefined,
+                            }
+                          : p
+                      )
+                    )
+                  }
+                >
+                  <option value="">None</option>
+                  {sizeGuides.map((guide) => (
+                    <option key={guide.id} value={guide.id}>
+                      {guide.name}
+                    </option>
+                  ))}
+                </select>
+              </td>
+              <td className="px-4 py-2 border whitespace-nowrap">
                 <button
                   onClick={() => handleDelete(product.id)}
                   className="text-red-600 hover:underline"
@@ -142,22 +242,7 @@ export default function ProductTable() {
                   Delete
                 </button>
                 <button
-                  onClick={async () => {
-                    try {
-                      const res = await fetch(
-                        `/api/admin/products/${product.id}`,
-                        {
-                          method: "PUT",
-                          headers: { "Content-Type": "application/json" },
-                          body: JSON.stringify(product),
-                        }
-                      );
-                      if (!res.ok) throw new Error("Failed to save changes");
-                      alert("Product updated!");
-                    } catch (err: any) {
-                      alert(err.message);
-                    }
-                  }}
+                  onClick={() => handleSave(product)}
                   className="text-blue-600 hover:underline ml-4"
                 >
                   Save

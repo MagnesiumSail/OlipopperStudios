@@ -1,27 +1,17 @@
-import { PrismaClient } from '@prisma/client'
-const prisma = new PrismaClient()
+import { prisma } from '@/lib/prisma';
 
 async function main() {
-  await prisma.product.createMany({
-    data: [
-      {
-        name: "Red Dress",
-        description: "Elegant evening dress",
-        price: 7999,
-        isPattern: false,
-        imageUrl: "/images/red-dress.jpg",
-      },
-      {
-        name: "Summer Top Pattern",
-        description: "Printable pattern for a light summer top",
-        price: 1299,
-        isPattern: true,
-        imageUrl: "/images/summer-pattern.jpg",
-      },
-    ],
-  })
+  await prisma.sizeGuide.create({
+    data: {
+      name: 'Default Size Guide',
+      tableData: [["Size", "Bust", "Waist", "Hips"], ["S", "34", "26", "36"]],
+    },
+  });
+
+  console.log('Seeded size guide!');
 }
 
-main()
-  .catch(e => console.error(e))
-  .finally(() => prisma.$disconnect())
+main().catch((e) => {
+  console.error(e);
+  process.exit(1);
+});

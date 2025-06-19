@@ -1,21 +1,30 @@
-// src/app/admin/components/AddProductForm.tsx
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 
 export default function AddProductForm({ onProductAdded }: { onProductAdded: () => void }) {
-  // Form state
   const [name, setName] = useState('');
   const [price, setPrice] = useState('');
   const [description, setDescription] = useState('');
-  const [imageUrl, setImageUrl] = useState('');
+  const [videoUrl, setVideoUrl] = useState('');
+  const [tags, setTags] = useState('');
+  const [images, setImages] = useState<string[]>([]);
+  const [imageInput, setImageInput] = useState('');
+  const [sizeGuideId, setSizeGuideId] = useState<number | ''>('');
+  const [sizeGuides, setSizeGuides] = useState<{ id: number; name: string }[]>([]);
   const [isPattern, setIsPattern] = useState(false);
   const [isActive, setIsActive] = useState(true);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const [success, setSuccess] = useState(false);
 
-  // Submit handler
+  useEffect(() => {
+    fetch('/api/admin/size-guides')
+      .then(res => res.json())
+      .then(setSizeGuides)
+      .catch(() => setSizeGuides([]));
+  }, []);
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
@@ -28,9 +37,12 @@ export default function AddProductForm({ onProductAdded }: { onProductAdded: () 
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           name,
-          price: parseInt(price), // assume cents
+          price: parseInt(price),
           description,
-          imageUrl,
+          videoUrl,
+          tags: tags.split(',').map(tag => tag.trim()),
+          sizeGuideId: sizeGuideId || undefined,
+          images: images.map((url, index) => ({ url, order: index })),
           isPattern,
           isActive,
         }),
@@ -39,12 +51,14 @@ export default function AddProductForm({ onProductAdded }: { onProductAdded: () 
       if (!res.ok) throw new Error('Failed to add product');
 
       setSuccess(true);
-      onProductAdded(); // Refresh product table
-      // Clear form
+      onProductAdded();
       setName('');
       setPrice('');
       setDescription('');
-      setImageUrl('');
+      setVideoUrl('');
+      setTags('');
+      setSizeGuideId('');
+      setImages([]);
       setIsPattern(false);
       setIsActive(true);
     } catch (err: any) {
@@ -54,68 +68,61 @@ export default function AddProductForm({ onProductAdded }: { onProductAdded: () 
     }
   };
 
+  const addImage = () => {
+    if (imageInput.trim()) {
+      setImages(prev => [...prev, imageInput.trim()]);
+      setImageInput('');
+    }
+  };
+
+  const removeImage = (url: string) => {
+    setImages(prev => prev.filter(img => img !== url));
+  };
+
   return (
     <form onSubmit={handleSubmit} className="mb-6 border rounded p-4">
       <h2 className="text-lg font-bold mb-2">Add New Product</h2>
 
-      {/* Show messages */}
       {error && <p className="text-red-600 mb-2">{error}</p>}
       {success && <p className="text-green-600 mb-2">Product added!</p>}
 
-      {/* Fields */}
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-        <input
-          type="text"
-          placeholder="Product Name"
-          required
-          value={name}
-          onChange={e => setName(e.target.value)}
-          className="border p-2 rounded"
-        />
-        <input
-          type="number"
-          placeholder="Price in cents"
-          required
-          value={price}
-          onChange={e => setPrice(e.target.value)}
-          className="border p-2 rounded"
-        />
-        <input
-          type="text"
-          placeholder="Image URL (optional)"
-          value={imageUrl}
-          onChange={e => setImageUrl(e.target.value)}
-          className="border p-2 rounded"
-        />
-        <textarea
-          placeholder="Description"
-          value={description}
-          onChange={e => setDescription(e.target.value)}
-          className="border p-2 rounded col-span-full"
-        />
+        <input type="text" placeholder="Product Name" required value={name} onChange={e => setName(e.target.value)} className="border p-2 rounded" />
+        <input type="number" placeholder="Price in cents" required value={price} onChange={e => setPrice(e.target.value)} className="border p-2 rounded" />
+        <textarea placeholder="Description" value={description} onChange={e => setDescription(e.target.value)} className="border p-2 rounded col-span-full" />
+        <input type="text" placeholder="Video URL (optional)" value={videoUrl} onChange={e => setVideoUrl(e.target.value)} className="border p-2 rounded col-span-full" />
+        <input type="text" placeholder="Tags (comma separated)" value={tags} onChange={e => setTags(e.target.value)} className="border p-2 rounded col-span-full" />
+
+        <div className="col-span-full">
+          <label className="block font-medium mb-1">Images</label>
+          <div className="flex gap-2 mb-2">
+            <input type="text" value={imageInput} onChange={e => setImageInput(e.target.value)} placeholder="Image URL" className="border p-2 rounded w-full" />
+            <button type="button" onClick={addImage} className="bg-blue-600 text-white px-3 py-2 rounded">Add</button>
+          </div>
+          <ul className="list-disc pl-5">
+            {images.map((url, i) => (
+              <li key={i} className="flex justify-between items-center text-sm mb-1">
+                <span>{url}</span>
+                <button type="button" onClick={() => removeImage(url)} className="text-red-500 ml-2 text-xs">Remove</button>
+              </li>
+            ))}
+          </ul>
+        </div>
+
+        <select value={sizeGuideId} onChange={e => setSizeGuideId(e.target.value ? parseInt(e.target.value) : '')} className="border p-2 rounded col-span-full">
+          <option value="">No Size Guide</option>
+          {sizeGuides.map(g => <option key={g.id} value={g.id}>{g.name}</option>)}
+        </select>
+
         <label className="flex items-center gap-2">
-          <input
-            type="checkbox"
-            checked={isPattern}
-            onChange={e => setIsPattern(e.target.checked)}
-          />
-          Is Pattern
+          <input type="checkbox" checked={isPattern} onChange={e => setIsPattern(e.target.checked)} /> Is Pattern
         </label>
         <label className="flex items-center gap-2">
-          <input
-            type="checkbox"
-            checked={isActive}
-            onChange={e => setIsActive(e.target.checked)}
-          />
-          Is Active
+          <input type="checkbox" checked={isActive} onChange={e => setIsActive(e.target.checked)} /> Is Active
         </label>
       </div>
 
-      <button
-        type="submit"
-        disabled={loading}
-        className="mt-4 bg-black text-white px-4 py-2 rounded hover:bg-gray-800 disabled:opacity-50"
-      >
+      <button type="submit" disabled={loading} className="mt-4 bg-black text-white px-4 py-2 rounded hover:bg-gray-800 disabled:opacity-50">
         {loading ? 'Adding...' : 'Add Product'}
       </button>
     </form>
