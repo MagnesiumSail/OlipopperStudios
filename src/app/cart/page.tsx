@@ -56,9 +56,11 @@ export default function CartPage() {
       </div>
 
       <div className="text-right">
+        <Link href="/checkout">
         <button className="bg-black text-white px-6 py-2 rounded hover:bg-gray-800">
           Proceed to Checkout
         </button>
+        </Link>
       </div>
     </div>
   );
