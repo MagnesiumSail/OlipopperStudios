@@ -32,13 +32,29 @@ model Product {
 }
 
 model Order {
-  id            Int      @id @default(autoincrement())
-  productId     Int
-  Product       Product  @relation(fields: [productId], references: [id])
-  customerEmail String
-  customNotes   String?
-  createdAt     DateTime @default(now())
+  id               Int       @id @default(autoincrement())
+  productId        Int?                  // optional for custom garments
+  Product          Product?              @relation(fields: [productId], references: [id])
+
+  customerEmail    String
+  customerName     String?
+  shippingAddress  String?
+  customNotes      String?
+
+  isCustom         Boolean   @default(false)
+  designImages String?  // could be a Google Drive or image upload link
+  customOrder     Json?     // store as raw JSON
+  occasion         String?
+
+  status           String    @default("pending")
+  isPaid           Boolean   @default(false)
+  totalPrice       Int?
+  quantity         Int       @default(1)
+
+  createdAt        DateTime  @default(now())
+  updatedAt        DateTime  @updatedAt
 }
+
 
 model User {
   id        String   @id @default(cuid())
