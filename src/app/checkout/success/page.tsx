@@ -19,9 +19,8 @@ export default function SuccessPage() {
       <p className="text-lg text-gray-700 mb-6">
         Your payment was successful. You'll receive a confirmation email shortly.
       </p>
-      <Link href="/products" className="bg-black text-white px-6 py-2 rounded hover:bg-gray-800">
-        Continue Shopping
-      </Link>
+      <a href="/" className="bg-black text-white px-6 py-2 rounded hover:bg-gray-800">Continue Shopping</a>
+
     </div>
   );
 }
