@@ -31,29 +31,28 @@ model Product {
 }
 
 model Order {
-  id               Int       @id @default(autoincrement())
-  productId        Int?                  // optional for custom garments
-  Product          Product?              @relation(fields: [productId], references: [id])
+  id        Int      @id @default(autoincrement())
+  productId Int? // optional for custom garments
+  Product   Product? @relation(fields: [productId], references: [id])
 
-  customerEmail    String
-  customerName     String?
-  shippingAddress  String?
-  customNotes      String?
+  customerEmail   String
+  customerName    String?
+  shippingAddress String?
+  customNotes     String?
 
-  isCustom         Boolean   @default(false)
-  designImages String?  // could be a Google Drive or image upload link
-  customOrder     Json?     // store as raw JSON
-  occasion         String?
+  isCustom     Boolean @default(false)
+  designImages String? // could be a Google Drive or image upload link
+  customOrder  Json? // store as raw JSON
+  occasion     String?
 
-  status           String    @default("pending")
-  isPaid           Boolean   @default(false)
-  totalPrice       Int?
-  quantity         Int       @default(1)
+  status     String  @default("pending")
+  isPaid     Boolean @default(false)
+  totalPrice Int?
+  quantity   Int     @default(1)
 
-  createdAt        DateTime  @default(now())
-  updatedAt        DateTime  @updatedAt
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }
-
 
 model User {
   id        String   @id @default(cuid())
@@ -82,10 +81,19 @@ model SizeGuide {
 }
 
 model ProductImage {
-  id        Int     @id @default(autoincrement())
-  product   Product @relation(fields: [productId], references: [id])
-  productId Int
-  url       String
-  altText   String?
-  order     Int // ← optional, for ordering images
+  id             Int           @id @default(autoincrement())
+  product        Product       @relation(fields: [productId], references: [id])
+  productId      Int
+  url            String
+  altText        String?
+  order          Int // ← optional, for ordering images
+  MediaLibrary   MediaLibrary? @relation(fields: [mediaLibraryId], references: [id])
+  mediaLibraryId Int?
+}
+
+model MediaLibrary {
+  id        Int            @id @default(autoincrement())
+  url       String         @unique
+  createdAt DateTime       @default(now())
+  usedBy    ProductImage[] // optional relation if you want
 }
