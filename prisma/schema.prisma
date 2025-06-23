@@ -23,7 +23,6 @@ model Product {
   isActive     Boolean        @default(true)
   createdAt    DateTime       @default(now())
   updateAt     DateTime       @updatedAt
-  videoUrl     String?
   sizeGuideId  Int?
   sizeGuide    SizeGuide?     @relation(fields: [sizeGuideId], references: [id])
   sizeGuideUrl String?
