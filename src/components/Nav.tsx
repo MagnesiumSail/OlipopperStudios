@@ -2,7 +2,7 @@
 
 import Link from 'next/link';
 import { useSession, signOut } from 'next-auth/react';
-import { useCart } from '@/context/CartContext';
+import { useCart } from '@/utils/CartContext';
 
 export default function Nav() {
   const { data: session, status } = useSession();

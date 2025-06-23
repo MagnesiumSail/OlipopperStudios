@@ -1,7 +1,7 @@
 "use client";
 
 import Image from "next/image";
-import { useCart } from "@/context/CartContext";
+import { useCart } from "@/utils/CartContext";
 import { useEffect, useState } from "react";
 
 export default function Home() {

@@ -3,7 +3,7 @@
 
 import Link from 'next/link';
 import { useEffect } from 'react';
-import { useCart } from '@/context/CartContext';
+import { useCart } from '@/utils/CartContext';
 
 export default function SuccessPage() {
   const { clearCart } = useCart();

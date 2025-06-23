@@ -5,7 +5,7 @@ import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import SessionWrapper from "@/components/SessionWrapper";
 import Header from "@/components/header";
-import { CartProvider } from "@/context/CartContext";
+import { CartProvider } from "@/utils/CartContext";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
