@@ -1,5 +1,6 @@
 import { createUploadthing, type FileRouter } from "uploadthing/next";
 import { getServerSession } from "next-auth"; // Adjust if you use a different session system
+import { prisma } from "@/lib/prisma"; // Adjust the import path as needed
 
 const f = createUploadthing();
 
@@ -12,9 +13,18 @@ export const ourFileRouter = {
       if (!session?.user) throw new Error("Unauthorized");
       return { userId: session.user.id };
     })
-    .onUploadComplete(({ metadata, file }) => {
-      console.log("Uploaded image:", file.url);
-      return { url: file.url };
+    .onUploadComplete(async ({ metadata, file }) => {
+      // Save to your media library DB
+      await prisma.mediaLibrary.upsert({
+        where: { url: file.ufsUrl },
+        update: {},
+        create: {
+          url: file.ufsUrl,
+        },
+      });
+
+      console.log("Uploaded and saved:", file.ufsUrl);
+      return { url: file.ufsUrl };
     }),
 } satisfies FileRouter;
 
