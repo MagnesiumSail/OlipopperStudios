@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react";
 import UploadButton from "@/components/UploadButton";
+import MediaLibraryPicker from "@/components/MediaLibraryPicker";
 
 export default function AddProductForm({
   onProductAdded,
@@ -129,7 +130,6 @@ export default function AddProductForm({
               setImages((prev) => [...prev, ...urls]);
             }}
           />
-
           {images.length > 0 && (
             <ul className="list-disc pl-5 mt-2">
               {images.map((url, i) => (
@@ -151,6 +151,14 @@ export default function AddProductForm({
               ))}
             </ul>
           )}
+        </div>
+        <div className="mt-4">
+          <p className="font-medium mb-1">Or select from existing images:</p>
+          <MediaLibraryPicker
+            onSelect={(url) => {
+              setImages((prev) => [...prev, url]);
+            }}
+          />
         </div>
 
         <select
