@@ -44,7 +44,7 @@ model Order {
   designImages String? // could be a Google Drive or image upload link
   customOrder  Json? // store as raw JSON
   occasion     String?
-
+  sessionId  String?
   status     String  @default("pending")
   isPaid     Boolean @default(false)
   totalPrice Int?
