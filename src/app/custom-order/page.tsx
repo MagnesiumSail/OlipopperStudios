@@ -1,17 +1,13 @@
-// src/app/custom-order/page.tsx
 'use client';
 
 import { useState } from 'react';
 
-export default function CustomOrderPage() {
-  const [formData, setFormData] = useState({
+export default function CustomOrderForm() {
+  const [form, setForm] = useState({
     garmentType: '',
     fabric: '',
-    fabricLink: '',
     color: '',
-    colorLink: '',
     designDetails: '',
-    designLink: '',
     occasion: '',
     size: '',
     waist: '',
@@ -20,78 +16,78 @@ export default function CustomOrderPage() {
     height: '',
     name: '',
     email: '',
-    phone: '',
-    contactMethod: '',
-    address: '',
-    city: '',
-    state: '',
-    zip: '',
-    country: '',
-    consent: false,
   });
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-    const target = e.target as HTMLInputElement;
-    const { name, value, type } = target;
-    const checked = target.checked;
-    setFormData(prev => ({
-      ...prev,
-      [name]: type === 'checkbox' ? checked : value,
-    }));
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
+    const { name, value } = e.target;
+    setForm(prev => ({ ...prev, [name]: value }));
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!formData.consent) {
-      alert('You must agree to the data use terms.');
-      return;
+    const res = await fetch('/api/custom-order', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(form),
+    });
+
+    if (res.ok) {
+      alert('Custom order submitted!');
+      setForm({
+        garmentType: '', fabric: '', color: '', designDetails: '',
+        occasion: '', size: '', waist: '', bust: '', hips: '',
+        height: '', name: '', email: ''
+      });
+    } else {
+      alert('Error submitting form.');
     }
-    // Later: POST to /api/custom-order
-    console.log('Submitting form:', formData);
   };
 
   return (
-    <div className="max-w-3xl mx-auto p-6">
-      <h1 className="text-2xl font-bold mb-4">Custom Order Request</h1>
-      <form onSubmit={handleSubmit} className="space-y-4">
-        <input name="garmentType" placeholder="Garment Type" className="border p-2 w-full" onChange={handleChange} required />
-        <input name="fabric" placeholder="Fabric" className="border p-2 w-full" onChange={handleChange} required />
-        <input name="fabricLink" placeholder="Link to Fabric (optional)" className="border p-2 w-full" onChange={handleChange} />
-        <input name="color" placeholder="Color" className="border p-2 w-full" onChange={handleChange} required />
-        <input name="colorLink" placeholder="Link to Color/Fabric (optional)" className="border p-2 w-full" onChange={handleChange} />
-        <textarea name="designDetails" placeholder="Design Details" className="border p-2 w-full" onChange={handleChange} required />
-        <input name="designLink" placeholder="Design Inspiration Link (optional)" className="border p-2 w-full" onChange={handleChange} />
-        <input name="occasion" placeholder="Occasion (optional)" className="border p-2 w-full" onChange={handleChange} />
+    <form onSubmit={handleSubmit} className="space-y-4 p-4 max-w-xl mx-auto">
+      <h1 className="text-2xl font-bold mb-4">Custom Order</h1>
 
-        <h2 className="font-semibold pt-4">Measurements</h2>
-        <input name="size" placeholder="Size (e.g. M)" className="border p-2 w-full" onChange={handleChange} required />
-        <input name="waist" placeholder="Waist (in)" className="border p-2 w-full" onChange={handleChange} required />
-        <input name="bust" placeholder="Bust (in)" className="border p-2 w-full" onChange={handleChange} required />
-        <input name="hips" placeholder="Hips (in)" className="border p-2 w-full" onChange={handleChange} required />
-        <input name="height" placeholder="Height (in)" className="border p-2 w-full" onChange={handleChange} required />
+      <select name="garmentType" value={form.garmentType} onChange={handleChange} className="w-full border p-2 rounded">
+        <option value="">Garment Type</option>
+        <option>Dress</option>
+        <option>Top</option>
+        <option>Pants</option>
+        <option>Skirt</option>
+        <option>Jacket</option>
+        <option>Romper</option>
+        <option>Jumpsuit</option>
+        <option>Matching set</option>
+        <option>Other</option>
+      </select>
 
-        <h2 className="font-semibold pt-4">Customer Info</h2>
-        <input name="name" placeholder="Full Name" className="border p-2 w-full" onChange={handleChange} required />
-        <input name="email" placeholder="Email" type="email" className="border p-2 w-full" onChange={handleChange} required />
-        <input name="phone" placeholder="Phone Number" className="border p-2 w-full" onChange={handleChange} required />
-        <input name="contactMethod" placeholder="Preferred Contact Method" className="border p-2 w-full" onChange={handleChange} />
+      <input name="fabric" placeholder="Fabric" value={form.fabric} onChange={handleChange} className="w-full border p-2 rounded" />
+      <input name="color" placeholder="Color" value={form.color} onChange={handleChange} className="w-full border p-2 rounded" />
+      <textarea name="designDetails" placeholder="Design Details" value={form.designDetails} onChange={handleChange} className="w-full border p-2 rounded" />
+      <input name="occasion" placeholder="Occasion" value={form.occasion} onChange={handleChange} className="w-full border p-2 rounded" />
 
-        <h2 className="font-semibold pt-4">Shipping Info</h2>
-        <input name="address" placeholder="Street Address" className="border p-2 w-full" onChange={handleChange} required />
-        <input name="city" placeholder="City" className="border p-2 w-full" onChange={handleChange} required />
-        <input name="state" placeholder="State/Province" className="border p-2 w-full" onChange={handleChange} required />
-        <input name="zip" placeholder="ZIP/Postal Code" className="border p-2 w-full" onChange={handleChange} required />
-        <input name="country" placeholder="Country" className="border p-2 w-full" onChange={handleChange} required />
+      <select name="size" value={form.size} onChange={handleChange} className="w-full border p-2 rounded">
+        <option value="">Size</option>
+        <option>XXS</option>
+        <option>XS</option>
+        <option>S</option>
+        <option>M</option>
+        <option>L</option>
+        <option>XL</option>
+        <option>XXL</option>
+        <option>Other</option>
+      </select>
 
-        <label className="flex items-center gap-2 pt-4">
-          <input type="checkbox" name="consent" onChange={handleChange} />
-          I agree to allow this data to be used for fulfilling my custom clothing request.
-        </label>
+      <input name="waist" placeholder="Waist" value={form.waist} onChange={handleChange} className="w-full border p-2 rounded" />
+      <input name="bust" placeholder="Bust" value={form.bust} onChange={handleChange} className="w-full border p-2 rounded" />
+      <input name="hips" placeholder="Hips" value={form.hips} onChange={handleChange} className="w-full border p-2 rounded" />
+      <input name="height" placeholder="Height" value={form.height} onChange={handleChange} className="w-full border p-2 rounded" />
 
-        <button type="submit" className="bg-black text-white px-4 py-2 rounded hover:bg-gray-800">
-          Submit Custom Order
-        </button>
-      </form>
-    </div>
+      <input name="name" placeholder="Your Name" value={form.name} onChange={handleChange} className="w-full border p-2 rounded" />
+      <input name="email" placeholder="Your Email" value={form.email} onChange={handleChange} className="w-full border p-2 rounded" />
+
+      <button type="submit" className="bg-black text-white px-4 py-2 rounded hover:bg-gray-800">
+        Submit
+      </button>
+    </form>
   );
 }

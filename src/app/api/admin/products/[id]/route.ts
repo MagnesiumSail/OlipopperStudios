@@ -86,7 +86,6 @@ export async function PUT(req: NextRequest, { params }: { params: { id: string }
           description: body.description,
           isPattern: body.isPattern,
           isActive: body.isActive,
-          videoUrl: body.videoUrl,
           tags: body.tags,
           sizeGuideId: body.sizeGuideId || null,
         },

@@ -21,6 +21,7 @@ export default function Nav() {
       <div className="flex-1 flex justify-center gap-6">
         <Link href="/">Home</Link>
         <Link href="/products">Products</Link>
+        <Link href="/custom-order">Custom Order</Link>
         {session?.user?.role === "admin" && (
           <div className="flex gap-4 text-red-600 font-semibold">
             <Link href="/admin">Admin</Link>
