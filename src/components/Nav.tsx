@@ -1,8 +1,8 @@
-'use client';
+"use client";
 
-import Link from 'next/link';
-import { useSession, signOut } from 'next-auth/react';
-import { useCart } from '@/utils/CartContext';
+import Link from "next/link";
+import { useSession, signOut } from "next-auth/react";
+import { useCart } from "@/utils/CartContext";
 
 export default function Nav() {
   const { data: session, status } = useSession();
@@ -21,8 +21,11 @@ export default function Nav() {
       <div className="flex-1 flex justify-center gap-6">
         <Link href="/">Home</Link>
         <Link href="/products">Products</Link>
-        {session?.user?.role === 'admin' && (
-          <Link href="/admin" className="text-red-600 font-semibold">Admin</Link>
+        {session?.user?.role === "admin" && (
+          <div className="flex gap-4 text-red-600 font-semibold">
+            <Link href="/admin">Admin</Link>
+            <Link href="/admin/orders">Orders</Link>
+          </div>
         )}
       </div>
 
@@ -37,9 +40,11 @@ export default function Nav() {
           )}
         </Link>
 
-        {status === 'authenticated' ? (
+        {status === "authenticated" ? (
           <>
-            <span className="mr-2">Hello, {session.user.name || session.user.email}</span>
+            <span className="mr-2">
+              Hello, {session.user.name || session.user.email}
+            </span>
             <button
               onClick={() => signOut()}
               className="text-blue-600 hover:underline"
