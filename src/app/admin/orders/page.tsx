@@ -39,6 +39,20 @@ export default function AdminOrdersPage() {
     fetchOrders();
   }, []);
 
+  const handleStatusChange = async (orderId: number, status: string) => {
+    try {
+      const res = await fetch(`/api/admin/orders/${orderId}`, {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ status }),
+      });
+      if (!res.ok) throw new Error("Failed to update status");
+      setOrders(prev => prev.map(o => o.id === orderId ? { ...o, status } : o));
+    } catch (err) {
+      alert("Failed to update status");
+    }
+  };
+
   if (loading) return <p>Loading orders…</p>;
   if (error) return <p className="text-red-600">Error: {error}</p>;
 
@@ -67,7 +81,19 @@ export default function AdminOrdersPage() {
                 <td className="px-4 py-2 border">{order.customerEmail}</td>
                 <td className="px-4 py-2 border text-center">{order.quantity}</td>
                 <td className="px-4 py-2 border">${(order.totalPrice / 100).toFixed(2)}</td>
-                <td className="px-4 py-2 border capitalize">{order.status}</td>
+                <td className="px-4 py-2 border">
+                  <select
+                    value={order.status}
+                    onChange={(e) => handleStatusChange(order.id, e.target.value)}
+                    className="border p-1 rounded"
+                  >
+                    <option value="paid">Paid</option>
+                    <option value="in_progress">In Progress</option>
+                    <option value="in_transit">In Transit</option>
+                    <option value="delivered">Delivered</option>
+                    <option value="cancelled">Cancelled</option>
+                  </select>
+                </td>
                 <td className="px-4 py-2 border text-center">{order.isCustom ? "Yes" : "No"}</td>
                 <td className="px-4 py-2 border">{new Date(order.createdAt).toLocaleString()}</td>
               </tr>
