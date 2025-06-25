@@ -3,7 +3,6 @@
 import { useEffect, useState } from "react";
 import { useSession } from "next-auth/react";
 
-// Updated Product type
 interface ProductImage {
   id?: number;
   url: string;
@@ -18,7 +17,6 @@ interface Product {
   price: number;
   isPattern: boolean;
   isActive: boolean;
-  videoUrl?: string;
   tags: string[];
   sizeGuideId?: number;
   createdAt: string;
@@ -31,9 +29,7 @@ export default function ProductTable() {
   const [products, setProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
-  const [sizeGuides, setSizeGuides] = useState<{ id: number; name: string }[]>(
-    []
-  );
+  const [sizeGuides, setSizeGuides] = useState<{ id: number; name: string }[]>([]);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -64,9 +60,7 @@ export default function ProductTable() {
   const handleDelete = async (id: number) => {
     if (!confirm("Are you sure you want to delete this product?")) return;
     try {
-      const res = await fetch(`/api/admin/products/${id}`, {
-        method: "DELETE",
-      });
+      const res = await fetch(`/api/admin/products/${id}`, { method: "DELETE" });
       if (!res.ok) throw new Error("Failed to delete product");
       setProducts((prev) => prev.filter((p) => p.id !== id));
     } catch (err: any) {
@@ -100,9 +94,9 @@ export default function ProductTable() {
             <th className="px-4 py-2 border">Price ($)</th>
             <th className="px-4 py-2 border">Active</th>
             <th className="px-4 py-2 border">Pattern</th>
-            <th className="px-4 py-2 border">Video</th>
             <th className="px-4 py-2 border">Tags</th>
             <th className="px-4 py-2 border">Size Guide</th>
+            <th className="px-4 py-2 border">Images</th>
             <th className="px-4 py-2 border">Actions</th>
           </tr>
         </thead>
@@ -133,9 +127,7 @@ export default function ProductTable() {
                         p.id === product.id
                           ? {
                               ...p,
-                              price: Math.round(
-                                parseFloat(e.target.value) * 100
-                              ),
+                              price: Math.round(parseFloat(e.target.value) * 100),
                             }
                           : p
                       )
@@ -167,21 +159,6 @@ export default function ProductTable() {
                       prev.map((p) =>
                         p.id === product.id
                           ? { ...p, isPattern: e.target.checked }
-                          : p
-                      )
-                    )
-                  }
-                />
-              </td>
-              <td className="px-4 py-2 border">
-                <input
-                  className="w-full border p-1"
-                  value={product.videoUrl || ""}
-                  onChange={(e) =>
-                    setProducts((prev) =>
-                      prev.map((p) =>
-                        p.id === product.id
-                          ? { ...p, videoUrl: e.target.value }
                           : p
                       )
                     )
@@ -233,6 +210,17 @@ export default function ProductTable() {
                     </option>
                   ))}
                 </select>
+              </td>
+              <td className="px-4 py-2 border">
+                <ul className="space-y-1 max-w-[150px]">
+                  {product.images.map((img, i) => (
+                    <li key={i} className="text-xs truncate text-blue-600">
+                      <a href={img.url} target="_blank" rel="noreferrer">
+                        {img.url}
+                      </a>
+                    </li>
+                  ))}
+                </ul>
               </td>
               <td className="px-4 py-2 border whitespace-nowrap">
                 <button
