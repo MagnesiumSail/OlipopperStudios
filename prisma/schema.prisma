@@ -1,4 +1,4 @@
-// === FILE: src/app/custom-order/page.tsx
+// === FILE: prisma/schema.prisma
 // this is the prisma schema file that defines the local database.
 
 generator client {
