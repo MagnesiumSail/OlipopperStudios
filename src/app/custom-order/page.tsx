@@ -3,9 +3,11 @@
 'use client';
 
 import { useState } from 'react';
+import UploadButton from '@/components/UploadButton';
 
 export default function CustomOrderForm() {
   const [form, setForm] = useState<any>({});
+  const [designImages, setDesignImages] = useState<string[]>([]);
 
   const handleChange = (e: React.ChangeEvent<any>) => {
     const { name, value, type, checked } = e.target;
@@ -17,7 +19,7 @@ export default function CustomOrderForm() {
     const res = await fetch('/api/custom-order', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(form),
+      body: JSON.stringify({ ...form, designImages }),
     });
     alert(res.ok ? 'Custom order submitted!' : 'Error submitting form.');
   };
@@ -48,6 +50,36 @@ export default function CustomOrderForm() {
 
       {/* Design Details */}
       <textarea name="designDetails" placeholder="Design Details (include link if any)" onChange={handleChange} className="w-full border p-2 rounded" />
+
+      <label className="block font-medium mt-6">
+        Upload Inspiration Images (up to 4)
+        <span className="block text-gray-500 text-xs font-normal">
+          Optional – upload any photos, sketches, or reference images for your custom order
+        </span>
+      </label>
+      <UploadButton
+        onUploadComplete={urls => setDesignImages(urls.slice(0, 4))}
+      />
+      {/* Show thumbnails of uploaded images */}
+      {designImages.length > 0 && (
+        <div className="flex gap-2 mt-2 flex-wrap">
+          {designImages.map((url, i) => (
+            <div key={url} className="relative w-24 h-24 border rounded overflow-hidden bg-gray-100">
+              <img src={url} alt={`Design Inspiration ${i + 1}`} className="w-full h-full object-cover" />
+              <button
+                type="button"
+                className="absolute top-0 right-0 bg-white/80 hover:bg-red-500 hover:text-white text-xs px-1 py-0.5 rounded-bl"
+                onClick={() =>
+                  setDesignImages(prev => prev.filter((_, idx) => idx !== i))
+                }
+                aria-label="Remove image"
+              >
+                ×
+              </button>
+            </div>
+          ))}
+        </div>
+      )}
 
       {/* Occasion */}
       <input name="occasion" placeholder="Occasion" onChange={handleChange} className="w-full border p-2 rounded" />
