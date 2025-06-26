@@ -1,5 +1,5 @@
 // === FILE: src/types/next-auth.d.ts ===
-// +// This file extends the NextAuth types to include custom user and session properties.
+// This file extends the NextAuth types to include custom user and session properties.
 
 import NextAuth from "next-auth";
 
