@@ -1,3 +1,5 @@
+// === FILE: src/app/custom-order/page.tsx
+// This file defines a custom order form for users to submit their custom garment requests.
 'use client';
 
 import { useState } from 'react';

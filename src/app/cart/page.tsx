@@ -1,3 +1,6 @@
+// === FILE: src/app/cart/page.tsx ===
+// This file defines the shopping cart page where users can view and manage their cart items.
+
 'use client';
 
 import { useCart } from '@/utils/CartContext';

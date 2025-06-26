@@ -1,4 +1,5 @@
-//src/app/api/auth/register/route.ts
+// === FILE: src/app/api/auth/register/route.ts ===
+// This file handles the API route for user registration.
 
 import { NextResponse } from 'next/server';
 import { PrismaClient } from '@prisma/client';

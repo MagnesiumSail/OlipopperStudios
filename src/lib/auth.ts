@@ -1,4 +1,6 @@
-// src/lib/auth.ts
+// === FILE: src/lib/auth.ts ===
+// This file defines the authentication configuration for NextAuth.js using Prisma and CredentialsProvider.
+
 import { NextAuthOptions } from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
 import { PrismaAdapter } from "@next-auth/prisma-adapter";

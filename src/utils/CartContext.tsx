@@ -1,3 +1,6 @@
+// === FILE: src/utils/CartContext.tsx ===
+// This file defines a context for managing the shopping cart in a Next.js application.
+
 'use client';
 
 import { createContext, useContext, useEffect, useState, ReactNode } from 'react';

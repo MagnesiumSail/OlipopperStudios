@@ -1,3 +1,6 @@
+// === FILE: src/app/api/uploadthing/core.ts ===
+// This file handles the Uploadthing file upload configuration and API routes.
+
 import { createUploadthing, type FileRouter } from "uploadthing/next";
 import { getServerSession } from "next-auth"; // Adjust if you use a different session system
 import { prisma } from "@/lib/prisma"; // Adjust the import path as needed

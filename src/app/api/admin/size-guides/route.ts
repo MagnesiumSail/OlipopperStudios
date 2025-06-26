@@ -1,3 +1,6 @@
+// === FILE: src/app/api/admin/size-guides/route.ts ===
+// This file handles the API route for fetching size guides in the admin panel.
+
 import { NextRequest, NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth';

@@ -1,3 +1,6 @@
+// === FILE: src/app/api/checkout/route.ts ===
+// This file handles the API route for creating a Stripe checkout session.
+
 import Stripe from 'stripe';
 import { NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma'; // Adjust this path to your singleton

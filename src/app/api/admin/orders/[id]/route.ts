@@ -1,3 +1,6 @@
+// === FILE: src/app/api/admin/orders/[id]/route.ts ===
+// This file handles the API route for updating an order's status in the admin panel.
+
 import { prisma } from '@/lib/prisma';
 import { NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth';

@@ -1,3 +1,6 @@
+// === FILE: src/app/api/products/route.ts ===
+// This file handles the API route for fetching all products.
+
 import { NextResponse } from 'next/server'
 import { prisma } from '@/lib/prisma';
 

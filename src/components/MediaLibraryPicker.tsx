@@ -1,3 +1,6 @@
+// === FILE: src/components/MediaLibraryPicker.tsx ===
+// This file defines a media library picker component that allows users to select images from their uploaded media
+
 'use client';
 
 import { useEffect, useState } from 'react';

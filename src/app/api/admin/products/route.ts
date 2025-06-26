@@ -1,4 +1,5 @@
-// src/app/api/admin/products/route.ts
+// === FILE: src/app/api/admin/products/route.ts ===
+// This file handles the API routes for managing products in the admin panel.
 
 import { NextRequest, NextResponse } from "next/server";
 import { getServerSession } from "next-auth";
@@ -66,7 +67,6 @@ export async function POST(req: NextRequest) {
         price,
         isPattern,
         isActive,
-        videoUrl,
         tags,
         sizeGuideId,
       },

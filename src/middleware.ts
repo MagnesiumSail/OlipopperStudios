@@ -1,4 +1,5 @@
-//src/middleware.ts
+// === FILE: src/middleware.ts ===
+// This file defines middleware for Next.js that checks if a user is an admin before allowing access
 
 import { getToken } from "next-auth/jwt";
 import { NextResponse } from "next/server";

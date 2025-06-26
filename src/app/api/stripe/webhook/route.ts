@@ -1,3 +1,6 @@
+// === FILE: src/app/api/stripe/webhook/route.ts ===
+// This file handles the Stripe webhook for processing checkout session completions.
+
 import { NextResponse } from 'next/server';
 import Stripe from 'stripe';
 import { prisma } from '@/lib/prisma';

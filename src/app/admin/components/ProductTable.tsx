@@ -1,3 +1,6 @@
+// === FILE: src/app/admin/components/ProductTable.tsx ===
+// This file displays a table of products in the admin panel, allowing for editing and deletion.
+
 "use client";
 
 import { useEffect, useState } from "react";

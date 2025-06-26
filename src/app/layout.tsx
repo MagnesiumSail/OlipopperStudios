@@ -1,4 +1,5 @@
-// src/app/layout.tsx
+// === FILE: src/app/layout.tsx ===
+// This file defines the root layout for the Next.js application, including global styles and session management
 
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";

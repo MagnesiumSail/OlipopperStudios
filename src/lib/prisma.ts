@@ -1,5 +1,6 @@
-// src/lib/prisma.ts
-// This file sets up a Prisma client for database access in a Next.js application.
+// === FILE: src/lib/prisma.ts ===
+// This file initializes the Prisma client for database access in a Next.js application.
+
 import { PrismaClient } from '@prisma/client';
 
 const globalForPrisma = globalThis as unknown as {

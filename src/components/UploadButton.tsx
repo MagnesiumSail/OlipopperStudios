@@ -1,3 +1,6 @@
+// === FILE: src/components/UploadButton.tsx ===
+// This file defines a button component that allows users to upload files using Uploadthing's dropzone
+
 "use client";
 
 import { UploadDropzone } from "@/utils/uploadthing";

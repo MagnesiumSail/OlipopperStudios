@@ -1,3 +1,6 @@
+// === FILE: prisma/seed.ts ===
+// This file seeds the database with initial data for the size guide.
+
 import { prisma } from '@/lib/prisma';
 
 async function main() {

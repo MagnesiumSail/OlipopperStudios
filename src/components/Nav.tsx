@@ -1,3 +1,6 @@
+// === FILE: src/components/Nav.tsx ===
+// This file defines the navigation bar component for the application.
+
 "use client";
 
 import Link from "next/link";

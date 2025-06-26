@@ -1,3 +1,6 @@
+// === FILE: src/app/checkout/page.tsx ===
+// This file defines the checkout page where users can review their cart and proceed to payment.
+
 'use client';
 
 import { useCart } from '@/utils/CartContext';

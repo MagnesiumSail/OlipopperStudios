@@ -1,3 +1,6 @@
+// === FILE: src/app/api/custom-order/route.ts ===
+// This file handles the API route for submitting a custom order form.
+
 import { NextResponse } from 'next/server';
 import { Resend } from 'resend';
 

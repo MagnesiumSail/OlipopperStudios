@@ -1,3 +1,6 @@
+// === FILE: src/app/admin/page.tsx ===
+// This file defines the admin dashboard where admins can manage products and orders.
+
 'use client';
 
 import ProductTable from './components/ProductTable';

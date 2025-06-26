@@ -1,4 +1,6 @@
-// src/app/checkout/success/page.tsx
+// === FILE: src/app/checkout/success/page.tsx ===
+// This file defines the success page displayed after a successful checkout.
+
 'use client';
 
 import Link from 'next/link';

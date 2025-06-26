@@ -1,4 +1,5 @@
-// src/app/api/admin/products/[id]/route.ts
+// === FILE: src/app/api/admin/products/[id]/route.ts ===
+// This file handles the API routes for updating and deleting products in the admin panel.
 
 import { NextRequest, NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth';

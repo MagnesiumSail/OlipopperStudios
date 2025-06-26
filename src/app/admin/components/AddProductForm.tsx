@@ -1,3 +1,6 @@
+// === FILE: src/app/admin/components/AddProductForm.tsx ===
+// This file contains the form for adding a new product in the admin panel.
+
 "use client";
 
 import { useState, useEffect } from "react";

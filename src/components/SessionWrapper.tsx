@@ -1,4 +1,5 @@
-// src/components/SessionWrapper.tsx
+// === FILE: src/components/SessionWrapper.tsx ===
+// This file defines a wrapper component for Next.js that provides session management using next-auth.
 'use client';
 
 import { SessionProvider } from 'next-auth/react';

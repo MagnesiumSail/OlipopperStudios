@@ -1,3 +1,6 @@
+// === FILE: src/app/admin/orders/page.tsx ===
+// This file displays the admin orders page where admins can view and manage customer orders.
+
 "use client";
 
 import { useEffect, useState } from "react";

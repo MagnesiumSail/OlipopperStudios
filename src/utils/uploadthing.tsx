@@ -1,6 +1,7 @@
-// src/utils/uploadthing.tsx
+// === FILE: src/utils/uploadthing.tsx ===
+// This file defines a utility for generating an upload dropzone using Uploadthing in a Next.js application.
+
 import { generateUploadDropzone } from "@uploadthing/react";
 import type { OurFileRouter } from "@/app/api/uploadthing/core";
 
-// Creates a strongly-typed UploadDropzone for your file router.
 export const UploadDropzone = generateUploadDropzone<OurFileRouter>();

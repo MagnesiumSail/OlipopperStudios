@@ -1,4 +1,6 @@
-// src/components/SessionDebug.tsx
+// === FILE: src/components/SessionDebug.tsx ===
+// This file defines a component to debug and display the current user session in a Next.js application
+
 'use client';
 
 import { useSession } from 'next-auth/react';
