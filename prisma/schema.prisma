@@ -94,6 +94,7 @@ model ProductImage {
 model MediaLibrary {
   id        Int            @id @default(autoincrement())
   url       String         @unique
+  customUpload Boolean     @default(false)
   createdAt DateTime       @default(now())
   usedBy    ProductImage[] // optional relation if you want
 }
