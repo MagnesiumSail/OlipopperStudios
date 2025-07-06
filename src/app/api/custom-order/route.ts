@@ -1,6 +1,7 @@
 // === FILE: src/app/api/custom-order/route.ts ===
 // This file handles the API route for submitting a custom order form.
 
+import { prisma } from "@/lib/prisma";
 import { NextResponse } from "next/server";
 import { Resend } from "resend";
 
@@ -97,6 +98,17 @@ export async function POST(req: Request) {
       to: process.env.EMAIL_TO!,
       subject: `New Custom Order from ${data.name}`,
       html: htmlBody,
+    });
+
+    await prisma.order.create({
+      data: {
+        isCustom: true,
+        customerEmail: data.email,
+        customerName: data.name,
+        designImages: data.designImages,
+        customOrder: data, // <-- full form submission (JSON)
+        status: "pending",
+      },
     });
 
     return NextResponse.json({ success: true, id: response });
