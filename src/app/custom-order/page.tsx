@@ -3,10 +3,12 @@
 'use client';
 
 import { useState } from 'react';
+import { useRouter } from 'next/navigation';
 import UploadButton from '@/components/UploadButton';
 
 export default function CustomOrderForm() {
   const [form, setForm] = useState<any>({});
+  const router = useRouter();
   const [designImages, setDesignImages] = useState<string[]>([]);
 
   const handleChange = (e: React.ChangeEvent<any>) => {
@@ -21,7 +23,15 @@ export default function CustomOrderForm() {
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ ...form, designImages }),
     });
-    alert(res.ok ? 'Custom order submitted!' : 'Error submitting form.');
+    if (res.ok) {
+      alert('Your custom order has been submitted successfully!');
+      setForm({});
+      setDesignImages([]);
+      router.push('/'); // Redirect to home or another page
+    } else {
+      const errorData = await res.json();
+      alert(`Error submitting form: ${errorData.message || 'Unknown error'}`);
+    }
   };
 
   return (
