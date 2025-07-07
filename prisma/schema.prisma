@@ -35,7 +35,6 @@ model Order {
   customerEmail   String
   customerName    String?
   shippingAddress String?
-  customNotes     String?
 
   isCustom     Boolean @default(false)
   designImages String[] // could be a Google Drive or image upload link
