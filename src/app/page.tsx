@@ -3,9 +3,10 @@
 
 "use client";
 
-import Image from "next/image";
 import { useCart } from "@/utils/CartContext";
 import { useEffect, useState } from "react";
+import Link from "next/link";
+import AddToCartButton from "@/components/addToCartButton";
 
 export default function Home() {
   const { addToCart } = useCart();
@@ -55,20 +56,14 @@ export default function Home() {
                 No Image
               </div>
             )}
-
-            <h2 className="text-lg font-semibold">{product.name}</h2>
+            <Link href={`/products/${product.id}`}>
+              <h2 className="text-lg font-semibold">{product.name}</h2>
+            </Link>
             <p className="text-sm text-gray-600">{product.description}</p>
             <p className="font-bold mb-2">
               ${(product.price / 100).toFixed(2)}
             </p>
-
-            <button
-              onClick={() => handleAddToCart(product)}
-              className={`mt-auto bg-black text-white py-2 rounded transition-transform duration-200 hover:bg-gray-800
-    ${clickedId === product.id ? "scale-105" : "scale-90"}`}
-            >
-              Add to Cart
-            </button>
+            <AddToCartButton product={product} className="mt-auto" />
           </li>
         ))}
       </ul>
