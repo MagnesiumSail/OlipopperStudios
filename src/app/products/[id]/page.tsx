@@ -20,28 +20,21 @@ interface Product {
   tags: string[];
 }
 
-export default async function ProductSinglePage({
-  params,
-}: {
-  params: { id: string };
-}) {
-  // Fetch the product data from your API
+export default async function ProductSinglePage(
+  props: { params: Promise<{ id: string }> }
+) {
+  const { params } = props;
+  const { id } = await params; // must await here!
+
   const res = await fetch(
-    `${process.env.NEXT_PUBLIC_BASE_URL || ""}/api/products/${params.id}`,
-    {
-      cache: "no-store", // always show latest data
-    }
+    `${process.env.NEXT_PUBLIC_BASE_URL || ""}/api/products/${id}`,
+    { cache: "no-store" }
   );
 
-  if (!res.ok) {
-    return notFound();
-  }
+  if (!res.ok) return notFound();
 
-  const product: Product = await res.json();
-
-  if (!product) {
-    return notFound();
-  }
+  const product = await res.json();
+  if (!product) return notFound();
 
   return (
     <div className="max-w-3xl mx-auto p-6">
@@ -62,7 +55,7 @@ export default async function ProductSinglePage({
 
           {/* Thumbnails for additional images */}
           <div className="flex gap-2 mt-2">
-            {product.images.slice(1).map((img, i) => (
+            {product.images.slice(1).map((img: { url: string; altText?: string }, i: number) => (
               <img
                 key={i}
                 src={img.url}
