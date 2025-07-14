@@ -1,13 +1,7 @@
 // === FILE: src/app/products/[id]/page.tsx ===
-// This file displays the details of a specific product.
-
-// === FILE: src/app/products/[id]/page.tsx ===
 
 import { notFound } from "next/navigation";
 import AddToCartButton from "@/components/addToCartButton";
-
-// You could fetch via API or directly from Prisma if using a server component
-// Here's an example using fetch:
 
 interface Product {
   id: number;
@@ -20,11 +14,11 @@ interface Product {
   tags: string[];
 }
 
-export default async function ProductSinglePage(
-  props: { params: Promise<{ id: string }> }
-) {
+export default async function ProductSinglePage(props: {
+  params: Promise<{ id: string }>;
+}) {
   const { params } = props;
-  const { id } = await params; // must await here!
+  const { id } = await params;
 
   const res = await fetch(
     `${process.env.NEXT_PUBLIC_BASE_URL || ""}/api/products/${id}`,
@@ -32,54 +26,57 @@ export default async function ProductSinglePage(
   );
 
   if (!res.ok) return notFound();
-
   const product = await res.json();
   if (!product) return notFound();
 
   return (
-    <div className="max-w-3xl mx-auto p-6">
-      <div className="flex flex-col md:flex-row gap-8">
-        <div className="flex-shrink-0">
-          {/* Main product image */}
-          {product.images && product.images.length > 0 ? (
-            <img
-              src={product.images[0].url}
-              alt={product.images[0].altText || product.name}
-              className="rounded-lg w-72 h-72 object-cover mb-2"
-            />
-          ) : (
-            <div className="w-72 h-72 bg-gray-200 flex items-center justify-center text-gray-500 rounded-lg">
-              No Image
-            </div>
-          )}
-
-          {/* Thumbnails for additional images */}
-          <div className="flex gap-2 mt-2">
-            {product.images.slice(1).map((img: { url: string; altText?: string }, i: number) => (
-              <img
-                key={i}
-                src={img.url}
-                alt={img.altText || product.name}
-                className="w-16 h-16 object-cover rounded border"
-              />
-            ))}
+    <div className="w-full flex justify-center bg-[#f9f7f8] pt-32">
+      <div className="w-[90vw] max-w-[1800px] flex flex-col md:flex-row gap-12 py-12 md:py-0 px-2 md:px-0">
+        {/* === LEFT: Product images (vertical, take up most width) === */}
+        <div className="flex-1 flex flex-col gap-8">
+          <div className="bg-white rounded-2xl shadow-md border border-gray-100 p-4">
+            {product.images && product.images.length > 0 ? (
+              product.images.map(
+                (img: { url: string; altText?: string }, i: number) => (
+                  <img
+                    key={i}
+                    src={img.url}
+                    alt={img.altText || product.name}
+                    className="w-full rounded-2xl object-cover max-h-[80vh] shadow-md border mb-4"
+                    style={{ background: "#f8f8f8" }}
+                  />
+                )
+              )
+            ) : (
+              <div className="w-full h-96 bg-gray-200 flex items-center justify-center text-gray-500 rounded-lg">
+                No Image
+              </div>
+            )}
           </div>
         </div>
 
-        <div className="flex-1">
-          <h1 className="text-2xl font-bold mb-2">{product.name}</h1>
-          <p className="text-lg font-semibold text-gray-700 mb-4">
-            ${(product.price / 100).toFixed(2)}
-          </p>
-          <p className="mb-6 text-gray-800">{product.description}</p>
-
-          {product.tags.length > 0 && (
-            <div className="mb-4">
-              <span className="font-semibold">Tags: </span>
-              {product.tags.join(", ")}
+        {/* === RIGHT: Sticky product info === */}
+        <div className="w-full md:w-[32vw] max-w-sm md:pl-2 md:pr-4">
+          <div className="md:sticky md:top-32 flex flex-col gap-5">
+            <div className="bg-white rounded-2xl shadow-md border border-gray-100 p-6 flex flex-col gap-5">
+              <h1 className="font-sans font-light text-3xl tracking-wide mb-1 text-gray-900">
+                {product.name}
+              </h1>
+              <p className="text-2xl font-sans font-light mb-3 text-gray-700">
+                ${(product.price / 100).toFixed(2)}
+              </p>
+              <p className="mb-2 text-gray-800 font-sans font-light text-base leading-relaxed">
+                {product.description}
+              </p>
+              {product.tags.length > 0 && (
+                <div className="mb-2 text-gray-500 font-sans text-sm tracking-wide">
+                  <span className="font-semibold text-gray-700">Tags:</span>{" "}
+                  {product.tags.join(", ")}
+                </div>
+              )}
+              <AddToCartButton product={product} />
             </div>
-          )}
-          <AddToCartButton product={product} />
+          </div>
         </div>
       </div>
     </div>
