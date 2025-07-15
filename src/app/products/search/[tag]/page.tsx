@@ -17,49 +17,61 @@ interface Product {
 
 export default async function ProductTagPage(props: { params: Promise<{ tag: string }> }) {
   const { tag } = await props.params;
-  console.log("[PAGE] Tag param from route:", tag);
 
   const res = await fetch(
     `${process.env.NEXT_PUBLIC_BASE_URL || ""}/api/products?tag=${encodeURIComponent(tag)}`,
     { cache: "no-store" }
   );
-
-  console.log("[PAGE] API Response status:", res.status);
-
-  if (!res.ok) {
-    console.log("[PAGE] API not ok, returning notFound()");
-    return notFound();
-  }
+  if (!res.ok) return notFound();
   const products = await res.json();
-  console.log("[PAGE] Products from API:", products);
 
+  // Added: Faint gray bg, nav spacing, wide max width
   return (
-    <div className="max-w-6xl mx-auto px-4 py-10">
-    <h1 className="text-2xl font-bold mb-6">Products tagged: {tag}</h1>
-    <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-8">
-      {products.map((product: Product) => (
-        <div
-          key={product.id}
-          className="bg-white shadow rounded-lg p-4 flex flex-col"
-        >
-          {/* Product Image */}
-          {product.images?.length > 0 ? (
-            <img
-              src={product.images[0].url}
-              alt={product.images[0].altText || product.name}
-              className="w-full h-40 object-cover rounded mb-2"
-            />
-          ) : (
-            <div className="w-full h-40 bg-gray-200 flex items-center justify-center text-gray-500 rounded">
-              No Image
-            </div>
-          )}
-          <h2 className="text-lg font-semibold">{product.name}</h2>
-          <p className="text-sm text-gray-600">{product.description}</p>
-          <p className="font-bold mb-2">${(product.price / 100).toFixed(2)}</p>
+    <div className="w-full flex justify-center bg-[#f9f7f8] pt-32 min-h-screen">
+      <div className="w-[90vw] max-w-[1800px]">
+        {/* Modern heading, tags formatted */}
+        <h1 className="text-3xl font-light font-sans tracking-tight mb-10 text-center text-gray-900">
+          {`Products tagged: ${tag.charAt(0).toUpperCase() + tag.slice(1)}`}
+        </h1>
+        {/* Elegant product grid */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-10">
+          {products.map((product: Product) => (
+            <a
+              key={product.id}
+              href={`/products/${product.id}`}
+              className="group bg-white rounded-2xl shadow-md border border-gray-100 p-5 flex flex-col h-full transition-all hover:shadow-xl hover:-translate-y-2 focus:ring-2 ring-black/10"
+              style={{ textDecoration: "none" }}
+            >
+              {/* Product Image */}
+              <div className="aspect-[4/5] w-full mb-4 bg-gray-100 rounded-xl overflow-hidden flex items-center justify-center">
+                {product.images?.[0]?.url ? (
+                  <img
+                    src={product.images[0].url}
+                    alt={product.images[0].altText || product.name}
+                    className="object-cover w-full h-full transition-transform duration-300 group-hover:scale-105"
+                  />
+                ) : (
+                  <div className="w-full h-full flex items-center justify-center text-gray-400 text-lg">
+                    No Image
+                  </div>
+                )}
+              </div>
+              <div className="flex-1 flex flex-col">
+                <h2 className="font-sans font-light text-xl tracking-wide text-gray-900 mb-1 group-hover:underline">
+                  {product.name}
+                </h2>
+                <p className="text-md font-light text-gray-700 mb-2">
+                  ${(product.price / 100).toFixed(2)}
+                </p>
+                <p className="text-sm text-gray-600 mb-4 line-clamp-3">
+                  {product.description}
+                </p>
+                {/* You can add tags, badges, or AddToCartButton here if you want */}
+              </div>
+            </a>
+          ))}
         </div>
-      ))}
+      </div>
     </div>
-  </div>
   );
 }
