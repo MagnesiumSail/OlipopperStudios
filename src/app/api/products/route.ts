@@ -8,7 +8,6 @@ export async function GET(req: Request) {
   // Added: Log the URL and tag param
   const url = new URL(req.url);
   const tag = url.searchParams.get('tag');
-  console.log("[API] Fetching products. tag param:", tag);
 
   try {
     const products = await prisma.product.findMany({
@@ -26,7 +25,6 @@ export async function GET(req: Request) {
     });
 
     // Added: Log result length and a sample product
-    console.log("[API] Products returned:", products.length, products[0]);
 
     return NextResponse.json(products);
   } catch (error) {

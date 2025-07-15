@@ -113,6 +113,7 @@ export default function Nav() {
   {/* --- Bottom Row: Product Categories + Admin --- */}
   <div className="w-full border-t border-black/10 bg-transparent">
     <div className="flex flex-wrap justify-center items-center gap-6 md:gap-8 px-4 py-2 text-base md:text-lg font-sans font-light text-black whitespace-nowrap">
+      <Link href="/products" className="hover:underline hover:opacity-80 transition">All</Link>
       <Link href="/products/search/dress" className="hover:underline hover:opacity-80 transition">Dresses</Link>
       <Link href="/products/search/top" className="hover:underline hover:opacity-80 transition">Tops</Link>
       <Link href="/products/search/bottom" className="hover:underline hover:opacity-80 transition">Bottoms</Link>
