@@ -49,7 +49,6 @@ export async function POST(req: NextRequest) {
       price,
       isPattern = false,
       isActive = true,
-      videoUrl,
       tags,
       sizeGuideId,
       images = [],
@@ -57,6 +56,17 @@ export async function POST(req: NextRequest) {
 
     if (!name || typeof price !== 'number') {
       return NextResponse.json({ error: 'Missing or invalid fields' }, { status: 400 });
+    }
+
+    // Normalize tags to an array of strings
+    let tagsArray: string[] = [];
+    if (Array.isArray(tags)) {
+      tagsArray = tags.map(tag => tag.trim().toLowerCase()).filter(Boolean);
+    } else if (typeof tags === "string") {
+      tagsArray = tags
+        .split(",")
+        .map(tag => tag.trim().toLowerCase())
+        .filter(Boolean);
     }
 
     // Create product first

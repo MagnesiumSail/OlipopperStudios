@@ -15,7 +15,7 @@ export default function AddProductForm({
   const [name, setName] = useState("");
   const [price, setPrice] = useState("");
   const [description, setDescription] = useState("");
-  const [tags, setTags] = useState("");
+  const [tags, setTags] = useState<string[]>([]);
   const [images, setImages] = useState<string[]>([]);
   const [imageInput, setImageInput] = useState("");
   const [sizeGuideId, setSizeGuideId] = useState<number | "">("");
@@ -27,6 +27,15 @@ export default function AddProductForm({
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const [success, setSuccess] = useState(false);
+  const ALLOWED_TAGS = [
+  "dress",
+  "top",
+  "bottom",
+  "set",
+  "outerwear",
+  "accessories",
+  "pattern"
+];
 
   useEffect(() => {
     fetch("/api/admin/size-guides")
@@ -49,7 +58,7 @@ export default function AddProductForm({
           name,
           price: parseInt(price),
           description,
-          tags: tags.split(",").map((tag) => tag.trim()),
+          tags,
           sizeGuideId: sizeGuideId || undefined,
           images: images.map((url, index) => ({ url, order: index })),
           isPattern,
@@ -64,7 +73,7 @@ export default function AddProductForm({
       setName("");
       setPrice("");
       setDescription("");
-      setTags("");
+      setTags([]);
       setSizeGuideId("");
       setImages([]);
       setIsPattern(false);
@@ -117,13 +126,26 @@ export default function AddProductForm({
           onChange={(e) => setDescription(e.target.value)}
           className="border p-2 rounded col-span-full"
         />
-        <input
-          type="text"
-          placeholder="Tags (comma separated)"
-          value={tags}
-          onChange={(e) => setTags(e.target.value)}
-          className="border p-2 rounded col-span-full"
-        />
+        <label className="block font-medium mb-1 col-span-full">
+        Tags (hold Ctrl/Cmd to select multiple)
+      </label>
+      <select
+        multiple
+        value={tags}
+        onChange={(e) => {
+          // Changed: Handle multi-select array
+          const selected = Array.from(e.target.selectedOptions).map(opt => opt.value);
+          setTags(selected);
+        }}
+        className="border p-2 rounded col-span-full"
+        required
+      >
+        {ALLOWED_TAGS.map(tag => (
+          <option key={tag} value={tag}>
+            {tag.charAt(0).toUpperCase() + tag.slice(1)}
+          </option>
+        ))}
+      </select>
 
         <div className="col-span-full">
           <label className="block font-medium mb-1">Images</label>

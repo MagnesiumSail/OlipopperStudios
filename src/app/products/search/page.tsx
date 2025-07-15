@@ -1,4 +1,4 @@
-// === FILE: src/app/page.tsx ===
+// === FILE: src/app/search/page.tsx ===
 // This file defines the home page where products are displayed and can be added to the cart.
 
 "use client";

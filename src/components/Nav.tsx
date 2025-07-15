@@ -113,14 +113,14 @@ export default function Nav() {
   {/* --- Bottom Row: Product Categories + Admin --- */}
   <div className="w-full border-t border-black/10 bg-transparent">
     <div className="flex flex-wrap justify-center items-center gap-6 md:gap-8 px-4 py-2 text-base md:text-lg font-sans font-light text-black whitespace-nowrap">
-      <Link href="/dresses" className="hover:underline hover:opacity-80 transition">Dresses</Link>
-      <Link href="/tops" className="hover:underline hover:opacity-80 transition">Tops</Link>
-      <Link href="/bottoms" className="hover:underline hover:opacity-80 transition">Bottoms</Link>
-      <Link href="/sets" className="hover:underline hover:opacity-80 transition">Sets</Link>
-      <Link href="/outerwear" className="hover:underline hover:opacity-80 transition">Outerwear</Link>
-      <Link href="/accessories" className="hover:underline hover:opacity-80 transition">Accessories</Link>
-      <Link href="/patterns" className="hover:underline hover:opacity-80 transition">Patterns DIY</Link>
-      <Link href="/custom-order" className="hover:underline hover:opacity-80 transition">Custom Order</Link>
+      <Link href="/products/search/dress" className="hover:underline hover:opacity-80 transition">Dresses</Link>
+      <Link href="/products/search/top" className="hover:underline hover:opacity-80 transition">Tops</Link>
+      <Link href="/products/search/bottom" className="hover:underline hover:opacity-80 transition">Bottoms</Link>
+      <Link href="/products/search/set" className="hover:underline hover:opacity-80 transition">Sets</Link>
+      <Link href="/products/search/outerwear" className="hover:underline hover:opacity-80 transition">Outerwear</Link>
+      <Link href="/products/search/accessories" className="hover:underline hover:opacity-80 transition">Accessories</Link>
+      <Link href="/products/search/pattern" className="hover:underline hover:opacity-80 transition">Patterns DIY</Link>
+      <Link href="/products/search/custom-order" className="hover:underline hover:opacity-80 transition">Custom Order</Link>
       {/* Admin/Orders */}
       {session?.user?.role === "admin" && (
         <div className="flex gap-4 ml-4 text-red-600 font-semibold">
