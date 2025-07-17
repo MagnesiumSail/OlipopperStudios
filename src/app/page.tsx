@@ -33,7 +33,7 @@ export default function Home() {
     <div className="w-full flex justify-center bg-[#f9f7f8] pt-32 min-h-screen">
       <div className="w-[90vw] max-w-[1000px]">
         {/* Newest Products */}
-        <h1 className="text-3xl font-light font-sans tracking-tight mb-8 text-center text-gray-900">
+        <h1 className="text-3xl font-light font-sans tracking-tight mt-10 mb-8 text-center text-gray-900">
           New Arrivals
         </h1>
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-10 mb-12">

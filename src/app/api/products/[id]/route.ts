@@ -9,7 +9,7 @@ export async function GET(
   context: { params: Promise<{ id: string }> }
 ) {
   const { params } = context;
-  const { id } = await params; // must await here!
+  const { id } = await params;
 
   const numId = Number(id);
   if (isNaN(numId))
@@ -19,11 +19,11 @@ export async function GET(
     where: { id: numId },
     include: {
       images: true,
-      sizeGuide: true, // <-- ADD THIS!
+      sizeGuide: true,
     },
   });
 
-  if (!product)
+  if (!product || !product.isActive)
     return NextResponse.json({ error: "Not found" }, { status: 404 });
 
   return NextResponse.json(product);
