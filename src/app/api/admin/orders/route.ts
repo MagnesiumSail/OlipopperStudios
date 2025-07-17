@@ -6,6 +6,7 @@ import { prisma } from "@/lib/prisma";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 
+
 export async function GET() {
   const session = await getServerSession(authOptions);
 
@@ -13,21 +14,23 @@ export async function GET() {
     return NextResponse.json({ error: "Unauthorized" }, { status: 403 });
   }
 
+  // Changed: Include orderItems and each associated product
   const orders = await prisma.order.findMany({
     orderBy: { createdAt: "desc" },
     include: {
-      Product: {
-        select: { name: true },
+      orderItems: {
+        include: { product: { select: { name: true } } },
       },
     },
   });
 
-  // Map result to match frontend's expected shape (flatten Product.name)
+  // Map each order to list of product names
   const result = orders.map((order) => ({
     ...order,
-    product: {
-      name: order.Product?.name || "[Deleted Product]",
-    },
+    products: order.orderItems.map((item) => ({
+      name: item.product?.name || "[Deleted Product]",
+      quantity: item.quantity,
+    })),
   }));
 
   return NextResponse.json(result);
