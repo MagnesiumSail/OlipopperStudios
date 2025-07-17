@@ -15,7 +15,7 @@ export async function GET(req: NextRequest) {
 
   try {
     const guides = await prisma.sizeGuide.findMany({
-      select: { id: true, name: true }
+      select: { id: true, name: true, tableData: true }
     });
 
     return NextResponse.json(guides);
