@@ -6,12 +6,14 @@
 import { useState, useEffect } from "react";
 import UploadButton from "@/components/UploadButton";
 import MediaLibraryPicker from "@/components/MediaLibraryPicker";
+import { UploadDropzone } from "@/utils/uploadthing";
 
 export default function AddProductForm({
   onProductAdded,
 }: {
   onProductAdded: () => void;
 }) {
+  const [patternPdfUrl, setPatternPdfUrl] = useState<string | null>(null);
   const [name, setName] = useState("");
   const [price, setPrice] = useState("");
   const [description, setDescription] = useState("");
@@ -28,14 +30,14 @@ export default function AddProductForm({
   const [error, setError] = useState("");
   const [success, setSuccess] = useState(false);
   const ALLOWED_TAGS = [
-  "dress",
-  "top",
-  "bottom",
-  "set",
-  "outerwear",
-  "accessories",
-  "pattern"
-];
+    "dress",
+    "top",
+    "bottom",
+    "set",
+    "outerwear",
+    "accessories",
+    "pattern",
+  ];
 
   useEffect(() => {
     fetch("/api/admin/size-guides")
@@ -63,6 +65,7 @@ export default function AddProductForm({
           images: images.map((url, index) => ({ url, order: index })),
           isPattern,
           isActive,
+          patternPdfUrl: isPattern ? patternPdfUrl : null,
         }),
       });
 
@@ -127,25 +130,27 @@ export default function AddProductForm({
           className="border p-2 rounded col-span-full"
         />
         <label className="block font-medium mb-1 col-span-full">
-        Tags (hold Ctrl/Cmd to select multiple)
-      </label>
-      <select
-        multiple
-        value={tags}
-        onChange={(e) => {
-          // Changed: Handle multi-select array
-          const selected = Array.from(e.target.selectedOptions).map(opt => opt.value);
-          setTags(selected);
-        }}
-        className="border p-2 rounded col-span-full"
-        required
-      >
-        {ALLOWED_TAGS.map(tag => (
-          <option key={tag} value={tag}>
-            {tag.charAt(0).toUpperCase() + tag.slice(1)}
-          </option>
-        ))}
-      </select>
+          Tags (hold Ctrl/Cmd to select multiple)
+        </label>
+        <select
+          multiple
+          value={tags}
+          onChange={(e) => {
+            // Changed: Handle multi-select array
+            const selected = Array.from(e.target.selectedOptions).map(
+              (opt) => opt.value
+            );
+            setTags(selected);
+          }}
+          className="border p-2 rounded col-span-full"
+          required
+        >
+          {ALLOWED_TAGS.map((tag) => (
+            <option key={tag} value={tag}>
+              {tag.charAt(0).toUpperCase() + tag.slice(1)}
+            </option>
+          ))}
+        </select>
 
         <div className="col-span-full">
           <label className="block font-medium mb-1">Images</label>
@@ -209,6 +214,35 @@ export default function AddProductForm({
           />{" "}
           Is Pattern
         </label>
+        {isPattern && (
+          <div className="col-span-full">
+            <label className="block font-medium mb-1">Pattern PDF</label>
+            <UploadDropzone
+              endpoint="productImage"
+              onClientUploadComplete={(res) => {
+                const url = res[0]?.url;
+                if (url) setPatternPdfUrl(url);
+              }}
+              onUploadError={(err) => alert(`Upload failed: ${err.message}`)}
+              appearance={{
+                container:
+                  "border border-dashed border-gray-400 p-4 rounded-md w-full max-w-md mx-auto",
+                uploadIcon: "w-10 h-10 text-gray-500 mx-auto",
+                label: "text-center text-sm text-gray-600 mt-2",
+                button:
+                  "mt-4 bg-black text-white px-4 py-2 rounded hover:bg-gray-800 cursor-pointer",
+              }}
+            />
+            {patternPdfUrl && (
+              <div className="mt-2 text-sm text-green-700">
+                ✅ Uploaded:{" "}
+                <a href={patternPdfUrl} target="_blank" className="underline">
+                  {patternPdfUrl}
+                </a>
+              </div>
+            )}
+          </div>
+        )}
         <label className="flex items-center gap-2">
           <input
             type="checkbox"

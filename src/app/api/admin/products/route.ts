@@ -52,6 +52,7 @@ export async function POST(req: NextRequest) {
       tags,
       sizeGuideId,
       images = [],
+      patternPdfUrl, 
     } = body;
 
     if (!name || typeof price !== 'number') {
@@ -79,6 +80,7 @@ export async function POST(req: NextRequest) {
         isActive,
         tags,
         sizeGuideId,
+        patternURL: patternPdfUrl,
       },
     });
 
