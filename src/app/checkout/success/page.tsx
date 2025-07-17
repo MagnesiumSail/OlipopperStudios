@@ -8,12 +8,18 @@ import { useEffect } from 'react';
 import { useCart } from '@/utils/CartContext';
 
 export default function SuccessPage() {
-  const { clearCart } = useCart();
+  const { cart, clearCart } = useCart();
+
+   console.log("SuccessPage mounted!");
 
   useEffect(() => {
+    console.log("Cart before clear:", cart);
     // Clear the cart once payment is done
+    const timeout = setTimeout(() => {
     clearCart();
-  }, [clearCart]);
+  }, 100);
+  console.log("Cart after clear:", cart);
+  }, []);
 
   return (
     <div className="p-6 text-center max-w-xl mx-auto">
