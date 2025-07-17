@@ -25,28 +25,38 @@ model Product {
   sizeGuide    SizeGuide?     @relation(fields: [sizeGuideId], references: [id])
   sizeGuideUrl String?
   tags         String[]
-  orders       Order[]
+  orderItems   OrderItem[]
 }
 
 model Order {
   id        Int      @id @default(autoincrement())
-  productId Int? // optional for custom garments
-  Product   Product? @relation(fields: [productId], references: [id])
   
   customerEmail   String
   customerName    String?
   shippingAddress String?
 
   isCustom     Boolean @default(false)
-  designImages String[] // could be a Google Drive or image upload link
+  designImages String[]
   customOrder  Json? // store as raw JSON
   status     String  @default("pending")
   isPaid     Boolean @default(false)
   totalPrice Int?
+  orderItems OrderItem[]
   quantity   Int     @default(1)
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+}
+
+model OrderItem {
+  id        Int     @id @default(autoincrement())
+  order     Order   @relation(fields: [orderId], references: [id])
+  orderId   Int
+  product   Product @relation(fields: [productId], references: [id])
+  productId Int
+  quantity  Int     @default(1)
+  unitPrice Int     // Price at time of order (store for history)
+  // Optionally, add more fields if needed (like customization info)
 }
 
 model User {

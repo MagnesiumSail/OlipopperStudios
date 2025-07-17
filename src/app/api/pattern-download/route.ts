@@ -19,7 +19,7 @@ export async function GET(req: NextRequest) {
     // Confirm the order, pattern, and email exist/match
     const order = await prisma.order.findUnique({
       where: { id: orderId },
-      include: { items: { include: { product: true } }, user: true },
+      include: { orderItems: { include: { product: true } }, user: true },
     });
 
     if (!order) return NextResponse.json({ error: "Order not found" }, { status: 404 });
