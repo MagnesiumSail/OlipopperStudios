@@ -41,7 +41,7 @@ export default function Nav() {
     window.addEventListener("scroll", handleScroll, { passive: true });
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
-  
+
   // --- Style: sticky, glassy, minimalist nav ---
   return (
     <nav
@@ -104,9 +104,15 @@ export default function Nav() {
               <span className="mr-2 text-sm truncate max-w-[100px] hidden md:inline">
                 Hello, {session.user.name || session.user.email}
               </span>
+              <a
+                href="/user/account"
+                className="text-blue-600 hover:underline hover:opacity-80 transition"
+              >
+                Account
+              </a>
               <button
                 onClick={() => signOut()}
-                className="text-blue-600 hover:underline hover:opacity-80 transition"
+                className="text-blue-600 hover:underline hover:opacity-80 transition text-sm mr-2"
               >
                 Logout
               </button>
@@ -189,10 +195,7 @@ export default function Nav() {
               <Link href="/admin/orders" className="hover:underline">
                 Orders
               </Link>
-              <Link
-                href="/admin/size-guide"
-                className="hover:underline"
-                >
+              <Link href="/admin/size-guide" className="hover:underline">
                 Sizing Guides
               </Link>
             </div>
