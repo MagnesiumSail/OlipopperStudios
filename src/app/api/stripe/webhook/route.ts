@@ -7,9 +7,6 @@ import { prisma } from "@/lib/prisma";
 import { Resend } from "resend";
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {});
-const JWT_SECRET =
-  process.env.PATTERN_DOWNLOAD_SECRET || "something-very-secret";
-const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL || "http://localhost:3000";
 const resend = new Resend(process.env.RESEND_API_KEY);
 
 export async function POST(req: Request) {
