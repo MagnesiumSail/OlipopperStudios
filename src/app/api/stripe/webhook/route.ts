@@ -5,11 +5,12 @@ import { NextResponse } from 'next/server';
 import Stripe from 'stripe';
 import { prisma } from '@/lib/prisma';
 import jwt from "jsonwebtoken";
-// import { sendEmail } from "@/lib/email"; // TODO: replace with your real email function
+import { Resend } from 'resend';
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {});
 const JWT_SECRET = process.env.PATTERN_DOWNLOAD_SECRET || "something-very-secret";
 const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL || "http://localhost:3000";
+const resend = new Resend(process.env.RESEND_API_KEY);
 
 export async function POST(req: Request) {
   const signature = req.headers.get('stripe-signature');
@@ -80,7 +81,6 @@ export async function POST(req: Request) {
       include: { orderItems: { include: { product: true } } },
     });
 
-    // Send pattern download links if any orderItem is a pattern
     for (const item of order.orderItems) {
       if (item.product.isPattern && item.product.patternURL) {
         const token = jwt.sign(
@@ -93,16 +93,21 @@ export async function POST(req: Request) {
           { expiresIn: "2d" }
         );
         const downloadLink = `${BASE_URL}/api/pattern-download?token=${token}`;
-        // TODO: Replace this with your real sendEmail call!
-        console.log(`Would email ${email}: Download your pattern here: ${downloadLink}`);
 
-        // Example sendEmail:
-        // await sendEmail({
-        //   to: email,
-        //   subject: "Your Olipopper Pattern Download",
-        //   html: `<p>Thank you for your purchase!<br/>
-        //   Download your pattern: <a href="${downloadLink}">${downloadLink}</a></p>`,
-        // });
+        await resend.emails.send({
+          from: process.env.EMAIL_FROM!, // Your verified sender email, e.g. "Olipopper Studios <noreply@olipopper.com>"
+          to: email,
+          subject: `Your Sewing Pattern: ${item.product.name}`,
+          html: `
+            <p>Thank you for purchasing <b>${item.product.name}</b> from Olipopper Studios!</p>
+            <p>Your pattern is ready to download:</p>
+            <p>
+              <a href="${downloadLink}">${downloadLink}</a>
+            </p>
+            <p>This link will expire in 2 days. If you have any trouble, reply to this email!</p>
+            <p>Happy sewing,<br/>Olipopper Studios</p>
+          `,
+        });
       }
     }
 
