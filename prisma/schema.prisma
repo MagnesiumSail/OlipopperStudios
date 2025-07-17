@@ -16,6 +16,7 @@ model Product {
   description  String?
   price        Int
   isPattern    Boolean        @default(false)
+  patternURL   String?
   images       ProductImage[]
   isActive     Boolean        @default(true)
   createdAt    DateTime       @default(now())
@@ -31,7 +32,7 @@ model Order {
   id        Int      @id @default(autoincrement())
   productId Int? // optional for custom garments
   Product   Product? @relation(fields: [productId], references: [id])
-
+  
   customerEmail   String
   customerName    String?
   shippingAddress String?
