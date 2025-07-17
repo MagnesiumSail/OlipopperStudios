@@ -190,6 +190,12 @@ export default function Nav() {
               <Link href="/admin/orders" className="hover:underline">
                 Orders
               </Link>
+              <Link
+                href="/admin/size-guide"
+                className="hover:underline"
+                >
+                Sizing Guides
+              </Link>
             </div>
           )}
         </div>

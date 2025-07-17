@@ -23,7 +23,6 @@ model Product {
   updateAt     DateTime       @updatedAt
   sizeGuideId  Int?
   sizeGuide    SizeGuide?     @relation(fields: [sizeGuideId], references: [id])
-  sizeGuideUrl String?
   tags         String[]
   orderItems   OrderItem[]
 }
