@@ -1,5 +1,5 @@
 // === FILE: src/app/api/stripe/webhook/route.ts ===
-// Stripe webhook: handle session completed, create order w/items, email pattern links
+// This file handles Stripe webhook events, particularly for order completion
 
 import { NextResponse } from 'next/server';
 import Stripe from 'stripe';

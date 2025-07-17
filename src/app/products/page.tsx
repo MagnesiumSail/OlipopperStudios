@@ -1,5 +1,5 @@
 // === FILE: src/app/products/page.tsx ===
-// Elegant, modern product archive grid (matches singles/nav styles)
+// This file displays a list of all products in a grid layout
 
 "use client";
 

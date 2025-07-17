@@ -1,5 +1,5 @@
 // === FILE: src/app/api/pattern-download/route.ts ===
-// Secure endpoint to deliver a pattern PDF if token/order is valid
+// This file handles the download of pattern PDFs for customers
 
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";

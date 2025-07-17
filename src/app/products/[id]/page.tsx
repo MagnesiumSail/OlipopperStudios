@@ -1,4 +1,5 @@
 // === FILE: src/app/products/[id]/page.tsx ===
+// This file displays a single product page with details and an "Add to Cart" button
 
 import { notFound } from "next/navigation";
 import AddToCartButton from "@/components/addToCartButton";

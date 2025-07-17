@@ -1,4 +1,6 @@
 // === FILE: src/app/api/products/[id]/route.ts ===
+// This file handles fetching product details by ID
+
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 

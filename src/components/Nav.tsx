@@ -1,5 +1,5 @@
 // === FILE: src/components/Nav.tsx ===
-// Now with responsive hamburger menu for mobile!
+// This file contains the navigation bar component with sticky, glassy design and responsive behavior
 
 "use client";
 

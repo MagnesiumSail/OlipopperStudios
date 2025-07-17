@@ -1,4 +1,6 @@
-//src/app/user/login/page.tsx
+// === FILE: src/app/user/login/page.tsx ===
+// This file handles user login functionality using NextAuth
+
 'use client';
 
 import { useState } from 'react';

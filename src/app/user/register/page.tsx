@@ -1,5 +1,6 @@
-// src/app/user/register/page.tsx
-// Sets the 'use client' directive to indicate this is a client component
+// === FILE: src/app/user/register/page.tsx ===
+// This file handles user registration functionality
+
 'use client';
 
 import React, { useState } from 'react';

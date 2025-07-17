@@ -1,3 +1,8 @@
+/**
+ * /src/app/globals.css
+ * This file contains global styles for the application.
+ */
+
 @import "tailwindcss";
 
 :root {
