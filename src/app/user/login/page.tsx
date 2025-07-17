@@ -24,8 +24,8 @@ export default function LoginPage() {
 
     // Call NextAuth signIn with "credentials" provider
     const res = await signIn('credentials', {
-      redirect: false, // We’ll manually redirect if it works
-      email,
+      redirect: false,
+      email: email.toLowerCase(),
       password,
     });
 

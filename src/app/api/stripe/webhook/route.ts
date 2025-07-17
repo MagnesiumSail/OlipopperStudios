@@ -4,7 +4,6 @@
 import { NextResponse } from "next/server";
 import Stripe from "stripe";
 import { prisma } from "@/lib/prisma";
-import jwt from "jsonwebtoken";
 import { Resend } from "resend";
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {});
@@ -39,7 +38,7 @@ export async function POST(req: Request) {
   if (event.type === "checkout.session.completed") {
     const session = event.data.object as Stripe.Checkout.Session;
 
-    const email = session.customer_email;
+    const email = session.customer_email?.toLowerCase();
     const name = session.metadata?.customerName || "Unknown";
     const rawCart = session.metadata?.rawCart;
     const sessionId = session.id;
@@ -62,11 +61,15 @@ export async function POST(req: Request) {
       where: { id: { in: cart.map((i) => i.productId) } },
     });
 
+    const user = await prisma.user.findUnique({ where: { email } });
+    console.log("Order webhook: looked up user by email", email, "=>", user?.id || "NO USER");
     // Create the order with all items
+    console.log("Order webhook: creating order with userId:", user ? user.id : null);
     const order = await prisma.order.create({
       data: {
         customerEmail: email,
         customerName: name,
+        userId: user ? user.id : null,
         status: "paid",
         isPaid: true,
         totalPrice: products.reduce((sum, product) => {
