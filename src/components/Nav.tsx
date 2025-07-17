@@ -16,9 +16,8 @@ export default function Nav() {
   // --- Sticky, Hide-on-Scroll Logic ---
   const [showNav, setShowNav] = useState(true);
   const lastScroll = useRef(0);
-
-  // Added: Hamburger menu state for mobile
   const [showMobileMenu, setShowMobileMenu] = useState(false);
+  const retractTimer = useRef<NodeJS.Timeout | null>(null);
 
   useEffect(() => {
     let ticking = false;
@@ -42,7 +41,7 @@ export default function Nav() {
     window.addEventListener("scroll", handleScroll, { passive: true });
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
-
+  
   // --- Style: sticky, glassy, minimalist nav ---
   return (
     <nav

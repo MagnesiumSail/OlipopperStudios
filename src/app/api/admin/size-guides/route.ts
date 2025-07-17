@@ -24,3 +24,34 @@ export async function GET(req: NextRequest) {
     return NextResponse.json({ error: 'Failed to fetch size guides' }, { status: 500 });
   }
 }
+
+export async function POST(req: NextRequest) {
+  const session = await getServerSession(authOptions);
+
+  // Only allow admins to create size guides
+  if (!session || session.user.role !== 'admin') {
+    return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+  }
+
+  try {
+    const { name, tableData } = await req.json();
+
+    // Validate input
+    if (!name || !Array.isArray(tableData) || !tableData.length) {
+      return NextResponse.json({ error: 'Missing or invalid fields' }, { status: 400 });
+    }
+
+    // Create the new size guide
+    const newGuide = await prisma.sizeGuide.create({
+      data: {
+        name,
+        tableData,
+      },
+    });
+
+    return NextResponse.json(newGuide, { status: 201 });
+  } catch (error) {
+    console.error('Error creating size guide:', error);
+    return NextResponse.json({ error: 'Internal Server Error' }, { status: 500 });
+  }
+}
