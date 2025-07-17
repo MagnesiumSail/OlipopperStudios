@@ -2,8 +2,12 @@
 
 "use client";
 
-import { useSession, signOut } from "next-auth/react";
+import { useSession } from "next-auth/react";
 import { useEffect, useState } from "react";
+import { signOut } from "next-auth/react";
+
+const IN_PROGRESS_STATUSES = ["paid", "in_progress", "in_transit"];
+const HISTORY_STATUSES = ["delivered", "cancelled"];
 
 export default function UserAccountPage() {
   const { data: session, status } = useSession();
@@ -12,7 +16,6 @@ export default function UserAccountPage() {
   const [deleting, setDeleting] = useState(false);
   const [deleteError, setDeleteError] = useState("");
 
-  // Fetch user's orders after session loads
   useEffect(() => {
     if (status === "authenticated") {
       setLoadingOrders(true);
@@ -25,6 +28,12 @@ export default function UserAccountPage() {
 
   if (status === "loading") return <p>Loading…</p>;
   if (!session) return <p>Please log in to view your account.</p>;
+
+  // Split orders into "in progress" and "history"
+  const inProgress = orders.filter((o) =>
+    IN_PROGRESS_STATUSES.includes(o.status)
+  );
+  const history = orders.filter((o) => HISTORY_STATUSES.includes(o.status));
 
   async function handleDeleteAccount() {
     if (
@@ -46,8 +55,45 @@ export default function UserAccountPage() {
     }
   }
 
+  function OrderList({ orders }: { orders: any[] }) {
+    if (!orders.length)
+      return <p className="text-gray-500">No orders found.</p>;
+    return (
+      <div className="space-y-4">
+        {orders.map((order) => (
+          <div key={order.id} className="border rounded p-4 bg-gray-50">
+            <div className="mb-1 text-gray-700">
+              <span className="font-semibold">Order #</span> {order.id}
+              {" · "}
+              <span className="font-semibold">Status:</span> {order.status}
+              {" · "}
+              <span className="font-semibold">Date:</span>{" "}
+              {order.createdAt
+                ? new Date(order.createdAt).toLocaleDateString()
+                : "N/A"}
+            </div>
+            <div className="text-gray-600 text-sm mb-1">
+              <span className="font-semibold">Total: </span>$
+              {(order.totalPrice / 100).toFixed(2)}
+            </div>
+            <div>
+              <span className="font-semibold">Items: </span>
+              {order.orderItems?.map((oi: any) =>
+                oi.product ? (
+                  <span key={oi.id} className="mr-2">
+                    {oi.product.name} ×{oi.quantity}
+                  </span>
+                ) : null
+              )}
+            </div>
+          </div>
+        ))}
+      </div>
+    );
+  }
+
   return (
-    <div className="max-w-xl mx-auto mt-40 p-6 bg-white rounded shadow">
+    <div className="max-w-xl mx-auto mt-20 p-6 bg-white rounded shadow">
       <h1 className="text-2xl font-bold mb-4">Account Details</h1>
       <div className="mb-2">
         <span className="font-semibold">Name: </span>
@@ -60,43 +106,23 @@ export default function UserAccountPage() {
 
       <hr className="my-8" />
 
-      <h2 className="text-lg font-semibold mb-2">Order History</h2>
+      <h2 className="text-lg font-semibold mb-2">In Progress</h2>
       {loadingOrders ? (
         <p>Loading orders…</p>
-      ) : orders.length === 0 ? (
-        <p className="text-gray-500">No orders found.</p>
       ) : (
-        <div className="space-y-4">
-          {orders.map((order) => (
-            <div key={order.id} className="border rounded p-4 bg-gray-50">
-              <div className="mb-1 text-gray-700">
-                <span className="font-semibold">Order #</span> {order.id}
-                {" · "}
-                <span className="font-semibold">Status:</span> {order.status}
-                {" · "}
-                <span className="font-semibold">Date:</span>{" "}
-                {order.createdAt
-                  ? new Date(order.createdAt).toLocaleDateString()
-                  : "N/A"}
-              </div>
-              <div className="text-gray-600 text-sm mb-1">
-                <span className="font-semibold">Total: </span>$
-                {(order.totalPrice / 100).toFixed(2)}
-              </div>
-              <div>
-                <span className="font-semibold">Items: </span>
-                {order.orderItems?.map((oi: any) =>
-                  oi.product ? (
-                    <span key={oi.id} className="mr-2">
-                      {oi.product.name} ×{oi.quantity}
-                    </span>
-                  ) : null
-                )}
-              </div>
-            </div>
-          ))}
-        </div>
+        <OrderList orders={inProgress} />
       )}
+
+      <hr className="my-8" />
+
+      <h2 className="text-lg font-semibold mb-2">Order History</h2>
+      {loadingOrders ? <p>Loading orders…</p> : <OrderList orders={history} />}
+      <button
+        className="bg-gray-300 text-gray-900 px-4 py-2 rounded mt-8 m-2 hover:bg-gray-400"
+        onClick={() => signOut({ callbackUrl: "/" })}
+      >
+        Logout
+      </button>
       <button
         className="bg-red-600 text-white px-4 py-2 rounded mt-8 hover:bg-red-700 disabled:opacity-50"
         disabled={deleting}
