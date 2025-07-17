@@ -62,9 +62,6 @@ export async function POST(req: Request) {
     });
 
     const user = await prisma.user.findUnique({ where: { email } });
-    console.log("Order webhook: looked up user by email", email, "=>", user?.id || "NO USER");
-    // Create the order with all items
-    console.log("Order webhook: creating order with userId:", user ? user.id : null);
     const order = await prisma.order.create({
       data: {
         customerEmail: email,
