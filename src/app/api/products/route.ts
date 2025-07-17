@@ -5,7 +5,6 @@ import { NextResponse } from 'next/server'
 import { prisma } from '@/lib/prisma';
 
 export async function GET(req: Request) {
-  // Added: Log the URL and tag param
   const url = new URL(req.url);
   const tag = url.searchParams.get('tag');
 
@@ -23,8 +22,6 @@ export async function GET(req: Request) {
         sizeGuide: true,
       },
     });
-
-    // Added: Log result length and a sample product
 
     return NextResponse.json(products);
   } catch (error) {

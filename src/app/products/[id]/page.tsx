@@ -3,6 +3,7 @@
 
 import { notFound } from "next/navigation";
 import AddToCartButton from "@/components/addToCartButton";
+import SizeGuideRender from "@/components/sizeGuideRender";
 
 interface Product {
   id: number;
@@ -29,6 +30,8 @@ export default async function ProductSinglePage(props: {
   if (!res.ok) return notFound();
   const product = await res.json();
   if (!product) return notFound();
+
+  console.log("product.sizeGuide:", product.sizeGuide);
 
   return (
     <div className="w-full flex justify-center bg-[#f9f7f8] pt-32">
@@ -66,6 +69,19 @@ export default async function ProductSinglePage(props: {
               <p className="text-2xl font-sans font-light mb-3 text-gray-700">
                 ${(product.price / 100).toFixed(2)}
               </p>
+              <div className="...">
+                {/* ...Product images, details, add-to-cart, etc... */}
+
+                {/* === Add the size guide button/modal if there's a guide === */}
+                <div className="my-4">
+                  {product.sizeGuide ? (
+                    <SizeGuideRender
+                      sizeGuideName={product.sizeGuide.name}
+                      tableData={product.sizeGuide.tableData}
+                    />
+                  ) : null}
+                </div>
+              </div>
               <p className="mb-2 text-gray-800 font-sans font-light text-base leading-relaxed">
                 {product.description}
               </p>
