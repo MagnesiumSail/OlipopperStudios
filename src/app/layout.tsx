@@ -38,8 +38,19 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body
-        className={`${geistSans.variable} ${geistMono.variable} ${montserrat.variable} antialiased min-h-screen flex flex-col bg-[#f9f7f8]`}
+        className={`${geistSans.variable} ${geistMono.variable} ${montserrat.variable} antialiased min-h-screen flex flex-col bg-white`}
       >
+        {/*<div className="fixed inset-0 -z-10">
+           Background image 
+          <img
+            src="/SisBG.jpg"
+            alt="Background"
+            className="w-full h-full object-top"
+            style={{ filter: "brightness(0.7)" }}
+          />
+
+          <div className="absolute inset-0 bg-gradient-to-b from-black/60 via-black/30 to-black/70 pointer-events-none" />
+        </div>*/}
         <SessionWrapper>
           <CartProvider>
             <Header />

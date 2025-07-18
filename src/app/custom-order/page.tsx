@@ -39,7 +39,7 @@ export default function CustomOrderForm() {
 
   return (
     <div className="mt-30 m-5">
-      <h1 className="text-3xl font-sans font-light mb-6 text-center text-gray-400">
+      <h1 className="text-3xl font-sans font-light mb-6 text-center text-gray-600">
         Custom Order Form
       </h1>
       <form

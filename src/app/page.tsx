@@ -30,7 +30,7 @@ export default function Home() {
   }, []);
 
   return (
-    <div className="w-full flex justify-center bg-[#f9f7f8] pt-32 min-h-screen">
+    <div className="w-full flex justify-center pt-32 min-h-screen bg-gray-50">
       <div className="w-[90vw] max-w-[1000px]">
         {/* Newest Products */}
         <h1 className="text-3xl font-light font-sans tracking-tight mt-10 mb-8 text-center text-gray-900">
@@ -70,7 +70,7 @@ export default function Home() {
         </div>
 
         {/* Boring About Section */}
-        <div className="bg-white rounded-xl shadow-md border border-gray-100 p-8 text-center mx-auto max-w-2xl">
+        <div className="bg-white rounded-xl shadow-md border border-gray-100 p-8 text-center mx-auto max-w-2xl mb-120">
           <h2 className="text-xl font-sans font-light mb-2 text-gray-800">Welcome to Olipopper Studios</h2>
           <p className="text-gray-600 mb-3">
             Every piece in our shop is thoughtfully designed and handmade by Olivia. Explore our new arrivals, browse categories, or request your own custom order. 
