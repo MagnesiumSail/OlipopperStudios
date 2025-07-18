@@ -1,6 +1,5 @@
 // === FILE: src/app/products/search/[tag]/page.tsx ===
 // This file renders a filtered product archive by tag (e.g., /products/search/dresses)
-
 import { notFound } from "next/navigation";
 
 // Product interface (as before)
@@ -25,7 +24,6 @@ export default async function ProductTagPage(props: { params: Promise<{ tag: str
   if (!res.ok) return notFound();
   const products = await res.json();
 
-  // Added: Faint gray bg, nav spacing, wide max width
   return (
     <div className="w-full flex justify-center bg-[#f9f7f8] pt-32 min-h-screen">
       <div className="w-[90vw] max-w-[1800px]">
@@ -66,7 +64,6 @@ export default async function ProductTagPage(props: { params: Promise<{ tag: str
                 <p className="text-sm text-gray-600 mb-4 line-clamp-3">
                   {product.description}
                 </p>
-                {/* You can add tags, badges, or AddToCartButton here if you want */}
               </div>
             </a>
           ))}

@@ -2,7 +2,7 @@
 // This file displays a single product page with details and an "Add to Cart" button
 
 import { notFound } from "next/navigation";
-import AddToCartButton from "@/components/addToCartButton";
+import ProductPurchaseSection from "@/components/ProductPurchaseSection";
 import SizeGuideRender from "@/components/sizeGuideRender";
 
 interface Product {
@@ -14,7 +14,9 @@ interface Product {
   isPattern: boolean;
   isActive: boolean;
   tags: string[];
+  sizes?: string[];
 }
+
 
 export default async function ProductSinglePage(props: {
   params: Promise<{ id: string }>;
@@ -32,6 +34,7 @@ export default async function ProductSinglePage(props: {
   if (!product) return notFound();
 
   console.log("product.sizeGuide:", product.sizeGuide);
+
 
   return (
     <div className="w-full flex justify-center bg-[#f9f7f8] pt-32">
@@ -91,7 +94,7 @@ export default async function ProductSinglePage(props: {
                   {product.tags.join(", ")}
                 </div>
               )}
-              <AddToCartButton product={product} />
+              <ProductPurchaseSection product={product} />
             </div>
           </div>
         </div>

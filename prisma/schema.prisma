@@ -58,6 +58,7 @@ model OrderItem {
   productId Int
   quantity  Int     @default(1)
   unitPrice Int     // Price at time of order (store for history)
+  size      String?
   // Optionally, add more fields if needed (like customization info)
 }
 
