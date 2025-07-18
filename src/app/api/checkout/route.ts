@@ -3,7 +3,7 @@
 
 import Stripe from "stripe";
 import { NextResponse } from "next/server";
-import { prisma } from "@/lib/prisma"; // Adjust this path to your singleton
+import { prisma } from "@/lib/prisma";
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!);
 
@@ -64,7 +64,7 @@ export async function POST(req: Request) {
       line_items,
       metadata: {
         customerName: name || "",
-        rawCart: JSON.stringify(cart), // Optional: log original request
+        rawCart: JSON.stringify(cart),
       },
       success_url: `${process.env.NEXT_PUBLIC_BASE_URL}/checkout/success`,
       cancel_url: `${process.env.NEXT_PUBLIC_BASE_URL}/cart`,

@@ -106,7 +106,7 @@ export async function POST(req: Request) {
         customerEmail: data.email,
         customerName: data.name,
         designImages: data.designImages,
-        customOrder: data, // <-- full form submission (JSON)
+        customOrder: data,
         status: "pending",
       },
     });

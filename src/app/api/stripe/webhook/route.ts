@@ -76,16 +76,51 @@ export async function POST(req: Request) {
             quantity: item.quantity,
             unitPrice:
               products.find((p) => p.id === item.productId)?.price || 0,
-            ...(item.size && { size: item.size }), // <-- add size if present!
+            ...(item.size && { size: item.size }),
           })),
         },
       },
       include: { orderItems: { include: { product: true } } },
     });
 
+    try {
+      await resend.emails.send({
+        from: process.env.EMAIL_FROM!,
+        to: email,
+        subject: "Order Confirmation - Olipopper Studios",
+        html: `
+      <h2>Thank you for your order!</h2>
+      <p>Hi ${name},</p>
+      <p>Your order <strong>#${order.id}</strong> has been received and is being processed.</p>
+      <p>
+        <strong>Order Details:</strong><br/>
+        ${order.orderItems
+          .map(
+            (item) =>
+              `${item.product?.name || "Product"} x${item.quantity}${item.size ? ` (Size: ${item.size})` : ""}`
+          )
+          .join("<br/>")}
+      </p>
+      <p>
+        <strong>Total:</strong> $${((order.totalPrice ?? 0) / 100).toFixed(2)}
+      </p>
+      <p>
+        You will receive another email when your order ships or is ready for download.<br/>
+        If you have any questions, reply to this email or contact us at <a href="mailto:contact@olipopperstudios.com">contact@olipopperstudios.com</a>.
+      </p>
+      <p>
+        Thank you!<br/>
+        Olipopper Studios
+      </p>
+    `,
+      });
+      console.log(`Order confirmation email sent to ${email}`);
+    } catch (err) {
+      console.error("❌ Failed to send confirmation email:", err);
+    }
+
     for (const item of order.orderItems) {
       if (item.product.isPattern && item.product.patternURL) {
-        // ...inside your pattern PDF attachment loop...
         try {
           console.log(`Attempting to send pattern PDF to ${email}...`);
           const pdfRes = await fetch(item.product.patternURL);
