@@ -45,7 +45,7 @@ export async function POST(req: Request) {
       return new NextResponse("Missing required metadata", { status: 400 });
     }
 
-    let cart: { productId: number; quantity: number }[];
+    let cart: { productId: number; quantity: number; size?: string }[];
     try {
       cart = JSON.parse(rawCart);
     } catch (err) {
@@ -76,9 +76,9 @@ export async function POST(req: Request) {
             quantity: item.quantity,
             unitPrice:
               products.find((p) => p.id === item.productId)?.price || 0,
+            ...(item.size && { size: item.size }), // <-- add size if present!
           })),
         },
-        
       },
       include: { orderItems: { include: { product: true } } },
     });

@@ -1,92 +1,141 @@
-// === FILE: src/app/user/account/page.tsx ===
+// === FILE: src/app/admin/orders/page.tsx ===
 
-'use client';
+// This file displays the admin orders page where admins can view and manage customer orders.
 
-import { useSession } from "next-auth/react";
+"use client";
+
 import { useEffect, useState } from "react";
 
-const IN_PROGRESS_STATUSES = ["paid", "in_progress", "in_transit"];
-const HISTORY_STATUSES = ["delivered", "cancelled"];
+interface OrderItem {
+  id: number;
+  product?: {
+    name: string;
+  };
+  quantity: number;
+  unitPrice: number;
+  size?: string;
+}
 
-export default function UserAccountPage() {
-  const { data: session, status } = useSession();
-  const [orders, setOrders] = useState<any[]>([]);
-  const [loadingOrders, setLoadingOrders] = useState(true);
+interface Order {
+  id: number;
+  customerEmail: string;
+  customerName?: string;
+  totalPrice: number;
+  status: string;
+  isCustom: boolean;
+  sessionId?: string;
+  createdAt: string;
+  orderItems: OrderItem[];
+}
+
+export default function AdminOrdersPage() {
+  const [orders, setOrders] = useState<Order[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState("");
 
   useEffect(() => {
-    if (status === "authenticated") {
-      setLoadingOrders(true);
-      fetch("/api/user/orders")
-        .then(res => res.json())
-        .then(data => setOrders(Array.isArray(data) ? data : []))
-        .finally(() => setLoadingOrders(false));
+    const fetchOrders = async () => {
+      try {
+        const res = await fetch("/api/admin/orders");
+        if (!res.ok) throw new Error("Failed to fetch orders");
+        const data = await res.json();
+        setOrders(data);
+      } catch (err: any) {
+        setError(err.message);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchOrders();
+  }, []);
+
+  const handleStatusChange = async (orderId: number, status: string) => {
+    try {
+      const res = await fetch(`/api/admin/orders/${orderId}`, {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ status }),
+      });
+      if (!res.ok) throw new Error("Failed to update status");
+      setOrders(prev => prev.map(o => o.id === orderId ? { ...o, status } : o));
+    } catch (err) {
+      alert("Failed to update status");
     }
-  }, [status]);
+  };
 
-  if (status === "loading") return <p>Loading…</p>;
-  if (!session) return <p>Please log in to view your account.</p>;
-
-  // Split orders into "in progress" and "history"
-  const inProgress = orders.filter(o => IN_PROGRESS_STATUSES.includes(o.status));
-  const history = orders.filter(o => HISTORY_STATUSES.includes(o.status));
-
-  function OrderList({ orders }: { orders: any[] }) {
-    if (!orders.length) return <p className="text-gray-500">No orders found.</p>;
-    return (
-      <div className="space-y-4">
-        {orders.map(order => (
-          <div key={order.id} className="border rounded p-4 bg-gray-50">
-            <div className="mb-1 text-gray-700">
-              <span className="font-semibold">Order #</span> {order.id}
-              {" · "}
-              <span className="font-semibold">Status:</span> {order.status}
-              {" · "}
-              <span className="font-semibold">Date:</span>{" "}
-              {order.createdAt
-                ? new Date(order.createdAt).toLocaleDateString()
-                : "N/A"}
-            </div>
-            <div className="text-gray-600 text-sm mb-1">
-              <span className="font-semibold">Total: </span>
-              ${(order.totalPrice / 100).toFixed(2)}
-            </div>
-            <div>
-              <span className="font-semibold">Items: </span>
-              {order.orderItems?.map((oi: any) =>
-                oi.product ? (
-                  <span key={oi.id} className="mr-2">
-                    {oi.product.name} ×{oi.quantity}
-                  </span>
-                ) : null
-              )}
-            </div>
-          </div>
-        ))}
-      </div>
-    );
-  }
+  if (loading) return <p>Loading orders…</p>;
+  if (error) return <p className="text-red-600">Error: {error}</p>;
 
   return (
-    <div className="max-w-xl mx-auto mt-20 p-6 bg-white rounded shadow">
-      <h1 className="text-2xl font-bold mb-4">Account Details</h1>
-      <div className="mb-2">
-        <span className="font-semibold">Name: </span>
-        {session.user.name || <span className="text-gray-500">N/A</span>}
-      </div>
-      <div className="mb-2">
-        <span className="font-semibold">Email: </span>
-        {session.user.email}
-      </div>
-
-      <hr className="my-8" />
-
-      <h2 className="text-lg font-semibold mb-2">In Progress</h2>
-      {loadingOrders ? <p>Loading orders…</p> : <OrderList orders={inProgress} />}
-
-      <hr className="my-8" />
-
-      <h2 className="text-lg font-semibold mb-2">Order History</h2>
-      {loadingOrders ? <p>Loading orders…</p> : <OrderList orders={history} />}
+    <div className="max-w-5xl mx-auto p-8">
+      <h1 className="text-3xl font-bold mb-8">Admin: Orders</h1>
+      <table className="w-full border-collapse bg-white shadow rounded-xl overflow-hidden">
+        <thead>
+          <tr className="bg-gray-100">
+            <th className="p-3 text-left">Order #</th>
+            <th className="p-3 text-left">Date</th>
+            <th className="p-3 text-left">Customer</th>
+            <th className="p-3 text-left">Email</th>
+            <th className="p-3 text-left">Items</th>
+            <th className="p-3 text-left">Total</th>
+            <th className="p-3 text-left">Status</th>
+          </tr>
+        </thead>
+        <tbody>
+          {orders.length === 0 ? (
+            <tr>
+              <td colSpan={7} className="text-center py-10 text-gray-500">
+                No orders found.
+              </td>
+            </tr>
+          ) : (
+            orders.map(order => (
+              <tr key={order.id} className="border-b">
+                <td className="p-3 font-mono">{order.id}</td>
+                <td className="p-3">
+                  {order.createdAt
+                    ? new Date(order.createdAt).toLocaleDateString()
+                    : "-"}
+                </td>
+                <td className="p-3">{order.customerName || "-"}</td>
+                <td className="p-3">{order.customerEmail}</td>
+                <td className="p-3">
+                  <ul>
+                    {order.orderItems.map(item => (
+                      <li key={item.id} className="mb-1">
+                        <span className="font-medium">{item.product?.name || "Deleted Product"}</span>
+                        {" ×"}
+                        <span className="ml-1">{item.quantity}</span>
+                        {item.size && (
+                          <span className="ml-2 text-xs px-2 py-1 bg-gray-200 rounded font-mono">
+                            Size: {item.size}
+                          </span>
+                        )}
+                        <span className="ml-3 text-gray-400 text-xs">
+                          (${(item.unitPrice / 100).toFixed(2)} each)
+                        </span>
+                      </li>
+                    ))}
+                  </ul>
+                </td>
+                <td className="p-3 font-semibold">${(order.totalPrice / 100).toFixed(2)}</td>
+                <td className="p-3">
+                  <select
+                    className="border rounded px-2 py-1"
+                    value={order.status}
+                    onChange={e => handleStatusChange(order.id, e.target.value)}
+                  >
+                    {["paid", "in_progress", "in_transit", "delivered", "cancelled"].map(status => (
+                      <option key={status} value={status}>{status}</option>
+                    ))}
+                  </select>
+                </td>
+              </tr>
+            ))
+          )}
+        </tbody>
+      </table>
     </div>
   );
 }
