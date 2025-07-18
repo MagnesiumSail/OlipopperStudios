@@ -20,6 +20,7 @@ export default function AddProductForm({
   const [tags, setTags] = useState<string[]>([]);
   const [images, setImages] = useState<string[]>([]);
   const [imageInput, setImageInput] = useState("");
+  const [sizes, setSizes] = useState<string>("");
   const [sizeGuideId, setSizeGuideId] = useState<number | "">("");
   const [sizeGuides, setSizeGuides] = useState<{ id: number; name: string }[]>(
     []
@@ -52,6 +53,11 @@ export default function AddProductForm({
     setError("");
     setSuccess(false);
 
+    const sizesArray = sizes
+      .split(/[,\s]+/)
+      .map((s) => s.trim())
+      .filter(Boolean);
+
     try {
       const res = await fetch("/api/admin/products", {
         method: "POST",
@@ -65,6 +71,7 @@ export default function AddProductForm({
           images: images.map((url, index) => ({ url, order: index })),
           isPattern,
           isActive,
+          sizes: sizesArray,
           patternPdfUrl: isPattern ? patternPdfUrl : null,
         }),
       });
@@ -151,6 +158,19 @@ export default function AddProductForm({
             </option>
           ))}
         </select>
+
+        <div className="mb-2">
+          <label className="block mb-1 font-medium">
+            Sizes (comma or space separated)
+          </label>
+          <input
+            type="text"
+            className="border rounded w-full p-2"
+            placeholder="e.g. XS, S, M, L, XL"
+            value={sizes}
+            onChange={(e) => setSizes(e.target.value)}
+          />
+        </div>
 
         <div className="col-span-full">
           <label className="block font-medium mb-1">Images</label>

@@ -78,6 +78,7 @@ export async function POST(req: Request) {
               products.find((p) => p.id === item.productId)?.price || 0,
           })),
         },
+        
       },
       include: { orderItems: { include: { product: true } } },
     });

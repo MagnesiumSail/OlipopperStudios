@@ -25,6 +25,7 @@ model Product {
   sizeGuide    SizeGuide?     @relation(fields: [sizeGuideId], references: [id])
   tags         String[]
   orderItems   OrderItem[]
+  sizes        String[]
 }
 
 model Order {

@@ -71,6 +71,7 @@ export async function POST(req: NextRequest) {
     }
 
     // Create product first
+    console.log("Writing product with sizes:", body.sizes);
     const newProduct = await prisma.product.create({
       data: {
         name,
@@ -81,6 +82,7 @@ export async function POST(req: NextRequest) {
         tags,
         sizeGuideId,
         patternURL: patternPdfUrl,
+        sizes: Array.isArray(body.sizes) ? body.sizes : [],
       },
     });
 

@@ -25,6 +25,7 @@ interface Product {
   createdAt: string;
   updateAt: string;
   images: ProductImage[];
+  sizes: string[];
 }
 
 export default function ProductTable() {
@@ -32,7 +33,9 @@ export default function ProductTable() {
   const [products, setProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
-  const [sizeGuides, setSizeGuides] = useState<{ id: number; name: string }[]>([]);
+  const [sizeGuides, setSizeGuides] = useState<{ id: number; name: string }[]>(
+    []
+  );
 
   useEffect(() => {
     const fetchData = async () => {
@@ -63,7 +66,9 @@ export default function ProductTable() {
   const handleDelete = async (id: number) => {
     if (!confirm("Are you sure you want to delete this product?")) return;
     try {
-      const res = await fetch(`/api/admin/products/${id}`, { method: "DELETE" });
+      const res = await fetch(`/api/admin/products/${id}`, {
+        method: "DELETE",
+      });
       if (!res.ok) throw new Error("Failed to delete product");
       setProducts((prev) => prev.filter((p) => p.id !== id));
     } catch (err: any) {
@@ -98,6 +103,7 @@ export default function ProductTable() {
             <th className="px-4 py-2 border">Active</th>
             <th className="px-4 py-2 border">Pattern</th>
             <th className="px-4 py-2 border">Tags</th>
+            <th className="px-4 py-2 border">Sizes</th>
             <th className="px-4 py-2 border">Size Guide</th>
             <th className="px-4 py-2 border">Images</th>
             <th className="px-4 py-2 border">Actions</th>
@@ -130,7 +136,9 @@ export default function ProductTable() {
                         p.id === product.id
                           ? {
                               ...p,
-                              price: Math.round(parseFloat(e.target.value) * 100),
+                              price: Math.round(
+                                parseFloat(e.target.value) * 100
+                              ),
                             }
                           : p
                       )
@@ -188,6 +196,15 @@ export default function ProductTable() {
                   }
                 />
               </td>
+
+              <td className="px-2 py-2 border-b text-sm">
+                {Array.isArray(product.sizes) && product.sizes.length > 0 ? (
+                  product.sizes.join(", ")
+                ) : (
+                  <span className="text-gray-400">–</span>
+                )}
+              </td>
+
               <td className="px-4 py-2 border">
                 <select
                   className="w-full border p-1"
