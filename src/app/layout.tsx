@@ -7,6 +7,7 @@ import "./globals.css";
 import SessionWrapper from "@/components/SessionWrapper";
 import Header from "@/components/header";
 import { CartProvider } from "@/utils/CartContext";
+import Footer from "@/components/footer";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -37,12 +38,13 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body
-        className={`${geistSans.variable} ${geistMono.variable} ${montserrat.variable} antialiased`}
+        className={`${geistSans.variable} ${geistMono.variable} ${montserrat.variable} antialiased min-h-screen flex flex-col bg-[#f9f7f8]`}
       >
         <SessionWrapper>
           <CartProvider>
             <Header />
-            <main>{children}</main>
+            <main className="flex-1">{children}</main>
+            <Footer />
           </CartProvider>
         </SessionWrapper>
       </body>
