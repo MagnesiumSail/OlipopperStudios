@@ -22,7 +22,7 @@ export default function SuccessPage() {
   }, []);
 
   return (
-    <div className="p-6 text-center max-w-xl mx-auto">
+    <div className="p-6 text-center max-w-xl mx-auto mt-30">
       <h1 className="text-3xl font-bold mb-4">🎉 Thank You for Your Order!</h1>
       <p className="text-lg text-gray-700 mb-6">
         Your payment was successful. You'll receive a confirmation email shortly.

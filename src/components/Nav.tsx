@@ -118,12 +118,20 @@ export default function Nav() {
               </button>
             </>
           ) : (
-            <Link
-              href="/user/login"
-              className="text-blue-600 hover:underline hover:opacity-80 transition"
-            >
-              Login
-            </Link>
+            <>
+              <Link
+                href="/user/login"
+                className="text-blue-600 hover:underline hover:opacity-80 transition text-sm mr-4"
+              >
+                Login
+              </Link>
+              <Link
+                href="/user/register"
+                className="text-blue-600 hover:underline hover:opacity-80 transition text-sm"
+              >
+                Register
+              </Link>
+            </>
           )}
         </div>
       </div>

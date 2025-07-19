@@ -12,7 +12,7 @@ export default function AdminDashboard() {
 
   return (
     <div className="p-6">
-      <h1 className="text-2xl font-bold mb-4">Admin Panel</h1>
+      <h1 className="text-2xl font-bold mb-4 mt-20">Admin Panel</h1>
       <AddProductForm onProductAdded={() => setRefreshKey(k => k + 1)} />
       <ProductTable key={refreshKey} />
     </div>
