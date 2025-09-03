@@ -4,9 +4,42 @@
 
 import { useCart } from '@/utils/CartContext';
 import Link from 'next/link';
+// added imports: auth hooks for gating checkout
+import { useSession, signIn } from 'next-auth/react';
 
 export default function CartPage() {
   const { cart, updateQuantity, removeFromCart, getTotal } = useCart();
+
+  // added: read auth state (to gate checkout + change button label)
+  const { data: session, status } = useSession();
+
+  // added: call checkout API directly from Cart (no /checkout page)
+  async function handleCheckout() {
+    // added: require login — bounce to login and back to /cart
+    if (status === 'unauthenticated') {
+      return signIn(undefined, { callbackUrl: '/cart' });
+    }
+
+    try {
+      const res = await fetch('/api/checkout', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        // added: send only the cart; server derives email from session
+        body: JSON.stringify({ cart }),
+      });
+
+      const data = await res.json();
+      if (!res.ok || !data?.url) {
+        throw new Error(data?.message || 'Checkout failed');
+      }
+
+      // added: redirect straight to Stripe Checkout
+      window.location.href = data.url;
+    } catch (err) {
+      console.error(err);
+      // optional: surface a toast or inline error UI here
+    }
+  }
 
   if (cart.length === 0) {
     return (
@@ -75,11 +108,14 @@ export default function CartPage() {
         <div className="text-lg font-bold">
           Total: <span className="text-gray-900">${(getTotal() / 100).toFixed(2)}</span>
         </div>
-        <Link href="/checkout" className="mt-4 sm:mt-0">
-          <button className="bg-black text-white px-7 py-3 rounded-lg hover:bg-gray-800 transition font-semibold shadow">
-            Proceed to Checkout
-          </button>
-        </Link>
+
+        {/* replaced Link-to-/checkout with direct button to API */}
+        <button
+          onClick={handleCheckout} // added: start checkout directly
+          className="bg-black text-white px-7 py-3 rounded-lg hover:bg-gray-800 transition font-semibold shadow mt-4 sm:mt-0"
+        >
+          {status !== 'authenticated' ? 'Sign in to Checkout' : 'Proceed to Checkout'}
+        </button>
       </div>
     </div>
   );

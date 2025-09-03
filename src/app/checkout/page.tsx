@@ -1,10 +1,11 @@
 // === FILE: src/app/checkout/page.tsx ===
 // This file defines the checkout page where users can review their cart and proceed to payment.
-
+/*
 'use client';
 
 import { useCart } from '@/utils/CartContext';
 import { useState } from 'react';
+import { useSession, signIn } from 'next-auth/react';
 
 export default function CheckoutPage() {
   const { cart, getTotal } = useCart();
@@ -12,8 +13,12 @@ export default function CheckoutPage() {
   const [name, setName] = useState('');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
+  const { data: session, status } = useSession();
 
   const handleCheckout = async () => {
+    if (status === 'unauthenticated') {
+      return signIn(undefined, { callbackUrl: '/checkout' });
+    }
     setLoading(true);
     setError('');
 
@@ -21,7 +26,7 @@ export default function CheckoutPage() {
       const res = await fetch('/api/checkout', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ cart, email, name }),
+        body: JSON.stringify({ cart, name }),
       });
 
       const data = await res.json();
@@ -63,7 +68,7 @@ export default function CheckoutPage() {
         Total: ${(getTotal() / 100).toFixed(2)}
       </div>
 
-      <input
+      {/* <input
         type="email"
         placeholder="Email (required)"
         value={email}
@@ -72,13 +77,13 @@ export default function CheckoutPage() {
         required
       />
 
-      <input
+      {/* <input
         type="text"
         placeholder="Name (optional)"
         value={name}
         onChange={e => setName(e.target.value)}
         className="w-full border p-2 mb-4 rounded"
-      />
+      /> 
 
       {error && <p className="text-red-600 mb-2">{error}</p>}
 
@@ -87,8 +92,9 @@ export default function CheckoutPage() {
         disabled={loading}
         className="bg-black text-white px-6 py-2 rounded hover:bg-gray-800 disabled:opacity-50"
       >
-        {loading ? 'Processing...' : 'Proceed to Payment'}
+        {loading ? 'Processing...' : (status !== 'authenticated' ? 'Sign in to Checkout' : 'Proceed to Payment')}
       </button>
     </div>
   );
 }
+*/

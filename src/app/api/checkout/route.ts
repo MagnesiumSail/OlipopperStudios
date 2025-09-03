@@ -4,22 +4,25 @@
 import Stripe from "stripe";
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
+import { getServerSession } from "next-auth";
+import { authOptions } from "@/lib/auth";
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!);
 
 export async function POST(req: Request) {
+  const session = await getServerSession(authOptions);
+  if (!session || !session.user?.email) {
+    return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
+  }
   try {
-    const { cart, email, name } = await req.json();
+    const { cart, name } = await req.json();
 
-    if (!email || !cart || cart.length === 0) {
-      return NextResponse.json(
-        { message: "Missing required info" },
-        { status: 400 }
-      );
+    if (!cart || cart.length === 0) {
+      return NextResponse.json({ message: "Missing required info" }, { status: 400 });
     }
 
     // Build secure line_items from real DB values
-    const line_items = [];
+    const line_items: Stripe.Checkout.SessionCreateParams.LineItem[] = [];
 
     for (const item of cart) {
       if (
@@ -57,20 +60,20 @@ export async function POST(req: Request) {
       });
     }
 
-    const session = await stripe.checkout.sessions.create({
+    const sessionStripe = await stripe.checkout.sessions.create({
       payment_method_types: ["card"],
       mode: "payment",
-      customer_email: email,
+      customer_email: session.user.email,
       line_items,
       metadata: {
-        customerName: name || "",
+        customerName: name || session.user.name || "",
         rawCart: JSON.stringify(cart),
       },
       success_url: `${process.env.NEXT_PUBLIC_BASE_URL}/checkout/success`,
       cancel_url: `${process.env.NEXT_PUBLIC_BASE_URL}/cart`,
     });
 
-    return NextResponse.json({ url: session.url });
+    return NextResponse.json({ url: sessionStripe.url });
   } catch (err: any) {
     console.error("Stripe checkout error:", err.message);
     return NextResponse.json(
