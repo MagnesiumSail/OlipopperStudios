@@ -11,7 +11,7 @@ export default function CartPage() {
   if (cart.length === 0) {
     return (
       <div className="p-6 text-center">
-        <h1 className="text-2xl font-bold mb-4">Your Cart is Empty</h1>
+        <h1 className="mt-30 text-2xl font-bold mb-4">Your Cart is Empty</h1>
         <Link href="/products" className="text-blue-600 hover:underline">Browse Products</Link>
       </div>
     );
