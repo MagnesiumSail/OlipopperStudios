@@ -6,18 +6,21 @@ import { useCart } from '@/utils/CartContext';
 import Link from 'next/link';
 // added imports: auth hooks for gating checkout
 import { useSession, signIn } from 'next-auth/react';
+import { useRouter } from 'next/navigation';
 
 export default function CartPage() {
   const { cart, updateQuantity, removeFromCart, getTotal } = useCart();
 
   // added: read auth state (to gate checkout + change button label)
   const { data: session, status } = useSession();
+  const router = useRouter();
 
   // added: call checkout API directly from Cart (no /checkout page)
   async function handleCheckout() {
     // added: require login — bounce to login and back to /cart
     if (status === 'unauthenticated') {
-      return signIn(undefined, { callbackUrl: '/cart' });
+      router.push('/user/login');
+      return;
     }
 
     try {
@@ -111,7 +114,7 @@ export default function CartPage() {
 
         {/* replaced Link-to-/checkout with direct button to API */}
         <button
-          onClick={handleCheckout} // added: start checkout directly
+          onClick={handleCheckout}
           className="bg-black text-white px-7 py-3 rounded-lg hover:bg-gray-800 transition font-semibold shadow mt-4 sm:mt-0"
         >
           {status !== 'authenticated' ? 'Sign in to Checkout' : 'Proceed to Checkout'}
