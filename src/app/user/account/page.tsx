@@ -6,6 +6,7 @@ import { useSession } from "next-auth/react";
 import { useEffect, useState } from "react";
 import { signOut } from "next-auth/react";
 import ChangePasswordForm from "@/components/ChangePasswordForm";
+import ChangeEmailForm from "@/components/ChangeEmailForm";
 
 const IN_PROGRESS_STATUSES = ["paid", "in_progress", "in_transit"];
 const HISTORY_STATUSES = ["delivered", "cancelled"];
@@ -124,8 +125,9 @@ export default function UserAccountPage() {
       >
         Logout
       </button>
-      <div className="mt-8">
+      <div className="grid gap-8">
         <ChangePasswordForm />
+        <ChangeEmailForm />
       </div>
       <button
         className="bg-red-600 text-white px-4 py-2 rounded mt-8 hover:bg-red-700 disabled:opacity-50"

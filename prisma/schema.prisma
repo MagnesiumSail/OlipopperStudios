@@ -73,6 +73,9 @@ model User {
   orders Order[]
   resetTokenHash     String?  @db.VarChar(128)
   resetTokenExpires  DateTime?
+  emailChangeTokenHash  String?  @db.VarChar(128)
+  emailChangeTokenExpires DateTime?
+  emailChangeNew        String?  @unique
 }
 
 model CustomRequestLog {
