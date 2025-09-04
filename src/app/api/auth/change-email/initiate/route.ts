@@ -72,6 +72,7 @@ export async function POST(req: Request) {
     await prisma.user.update({
       where: { id: user.id },
       data: {
+        //This is untested and probably broken
         emailChangeTokenHash: null,
         emailChangeTokenExpires: null,
         emailChangeNew: null,
