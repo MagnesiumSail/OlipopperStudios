@@ -71,6 +71,8 @@ model User {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
   orders Order[]
+  resetTokenHash     String?  @db.VarChar(128)
+  resetTokenExpires  DateTime?
 }
 
 model CustomRequestLog {
@@ -106,3 +108,4 @@ model MediaLibrary {
   createdAt DateTime       @default(now())
   usedBy    ProductImage[] // optional relation if you want
 }
+
