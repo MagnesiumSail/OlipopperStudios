@@ -1,16 +1,27 @@
 // === FILE: src/components/ProductPurchaseSection.tsx ===
-
 "use client";
 
 import { useState } from "react";
 import AddToCartButton from "@/components/addToCartButton";
 
-export default function ProductAddToCartSection({ product }: { product: any }) {
+// Add `purchasingPaused` as an optional prop
+export default function ProductAddToCartSection({
+  product,
+  purchasingPaused = false,
+}: {
+  product: any;
+  purchasingPaused?: boolean;
+}) {
   const [selectedSize, setSelectedSize] = useState("");
+
+  // sizes only when not a pattern
   const hasSizes =
     Array.isArray(product.sizes) &&
     product.sizes.length > 0 &&
     !product.isPattern;
+
+  // single place to decide if the action should be disabled
+  const disabled = purchasingPaused || (hasSizes && !selectedSize);
 
   return (
     <>
@@ -23,6 +34,7 @@ export default function ProductAddToCartSection({ product }: { product: any }) {
             value={selectedSize}
             onChange={(e) => setSelectedSize(e.target.value)}
             required
+            disabled={purchasingPaused}
           >
             <option value="">Choose a size...</option>
             {product.sizes.map((size: string) => (
@@ -33,10 +45,12 @@ export default function ProductAddToCartSection({ product }: { product: any }) {
           </select>
         </div>
       )}
+
+
       <AddToCartButton
         product={product}
         size={hasSizes ? selectedSize : undefined}
-        disabled={hasSizes && !selectedSize}
+        disabled={disabled}
       />
     </>
   );

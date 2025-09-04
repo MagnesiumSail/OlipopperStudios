@@ -112,3 +112,8 @@ model MediaLibrary {
   usedBy    ProductImage[] // optional relation if you want
 }
 
+model SiteSettings {
+  id                 Int      @id @default(1) // singleton row
+  purchasingPaused   Boolean  @default(false)
+  updatedAt          DateTime @updatedAt
+}

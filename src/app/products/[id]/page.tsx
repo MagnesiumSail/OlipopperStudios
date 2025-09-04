@@ -33,6 +33,12 @@ export default async function ProductSinglePage(props: {
   const product = await res.json();
   if (!product) return notFound();
 
+  const flagsRes = await fetch(
+    `${process.env.NEXT_PUBLIC_BASE_URL}/api/public/site-flags`,
+    { cache: "no-store" }
+  );
+  const { purchasingPaused } = await flagsRes.json();
+
   console.log("product.sizeGuide:", product.sizeGuide);
 
 
@@ -94,7 +100,16 @@ export default async function ProductSinglePage(props: {
                   {product.tags.join(", ")}
                 </div>
               )}
-              <ProductPurchaseSection product={product} />
+              <ProductPurchaseSection
+              product={product}
+              purchasingPaused={purchasingPaused}
+            />
+
+            {purchasingPaused && (
+              <div className="text-sm text-yellow-900 bg-yellow-50 border border-yellow-200 rounded-md p-2">
+                Purchasing is temporarily paused. Please check back soon.
+              </div>
+            )}
             </div>
           </div>
         </div>

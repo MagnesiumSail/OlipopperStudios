@@ -6,10 +6,18 @@ import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
+import { getPurchasingPaused } from "@/lib/siteSettings";
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!);
 
 export async function POST(req: Request) {
+  if (await getPurchasingPaused()) {
+    return NextResponse.json(
+      { error: "Purchasing is temporarily paused. Please try again later." },
+      { status: 503 }
+    );
+  }
+  
   const session = await getServerSession(authOptions);
   if (!session || !session.user?.email) {
     return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
