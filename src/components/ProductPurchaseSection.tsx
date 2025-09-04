@@ -1,13 +1,16 @@
-// === FILE: src/components/ProductAddToCartSection.tsx ===
+// === FILE: src/components/ProductPurchaseSection.tsx ===
 
-'use client';
+"use client";
 
 import { useState } from "react";
 import AddToCartButton from "@/components/addToCartButton";
 
 export default function ProductAddToCartSection({ product }: { product: any }) {
   const [selectedSize, setSelectedSize] = useState("");
-  const hasSizes = product.sizes && product.sizes.length > 0;
+  const hasSizes =
+    Array.isArray(product.sizes) &&
+    product.sizes.length > 0 &&
+    !product.isPattern;
 
   return (
     <>
@@ -18,7 +21,7 @@ export default function ProductAddToCartSection({ product }: { product: any }) {
           <select
             className="border rounded w-full p-2"
             value={selectedSize}
-            onChange={e => setSelectedSize(e.target.value)}
+            onChange={(e) => setSelectedSize(e.target.value)}
             required
           >
             <option value="">Choose a size...</option>

@@ -67,11 +67,11 @@ export default function AddProductForm({
           price: parseInt(price),
           description,
           tags,
-          sizeGuideId: sizeGuideId || undefined,
+          sizeGuideId: isPattern ? undefined : sizeGuideId || undefined,
           images: images.map((url, index) => ({ url, order: index })),
           isPattern,
           isActive,
-          sizes: sizesArray,
+          sizes: isPattern ? [] : sizesArray,
           patternPdfUrl: isPattern ? patternPdfUrl : null,
         }),
       });
@@ -163,13 +163,14 @@ export default function AddProductForm({
           <label className="block mb-1 font-medium">
             Sizes (comma or space separated)
           </label>
-          <input
-            type="text"
-            className="border rounded w-full p-2"
-            placeholder="e.g. XS, S, M, L, XL"
-            value={sizes}
-            onChange={(e) => setSizes(e.target.value)}
-          />
+          {!isPattern && (
+            <input
+              className="border p-2 rounded"
+              placeholder="Sizes e.g. XS, S, M, L"
+              value={sizes}
+              onChange={(e) => setSizes(e.target.value)}
+            />
+          )}
         </div>
 
         <div className="col-span-full">
@@ -211,20 +212,22 @@ export default function AddProductForm({
           />
         </div>
 
-        <select
-          value={sizeGuideId}
-          onChange={(e) =>
-            setSizeGuideId(e.target.value ? parseInt(e.target.value) : "")
-          }
-          className="border p-2 rounded col-span-full"
-        >
-          <option value="">No Size Guide</option>
-          {sizeGuides.map((g) => (
-            <option key={g.id} value={g.id}>
-              {g.name}
-            </option>
-          ))}
-        </select>
+        {!isPattern && (
+          <select
+            value={sizeGuideId}
+            onChange={(e) =>
+              setSizeGuideId(e.target.value ? parseInt(e.target.value) : "")
+            }
+            className="border p-2 rounded col-span-full"
+          >
+            <option value="">No Size Guide</option>
+            {sizeGuides.map((g) => (
+              <option key={g.id} value={g.id}>
+                {g.name}
+              </option>
+            ))}
+          </select>
+        )}
 
         <label className="flex items-center gap-2">
           <input
