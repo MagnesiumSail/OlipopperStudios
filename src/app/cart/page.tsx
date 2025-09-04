@@ -4,20 +4,16 @@
 
 import { useCart } from '@/utils/CartContext';
 import Link from 'next/link';
-// added imports: auth hooks for gating checkout
 import { useSession, signIn } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
 
 export default function CartPage() {
   const { cart, updateQuantity, removeFromCart, getTotal } = useCart();
 
-  // added: read auth state (to gate checkout + change button label)
   const { data: session, status } = useSession();
   const router = useRouter();
 
-  // added: call checkout API directly from Cart (no /checkout page)
   async function handleCheckout() {
-    // added: require login — bounce to login and back to /cart
     if (status === 'unauthenticated') {
       router.push('/user/login');
       return;
@@ -27,7 +23,6 @@ export default function CartPage() {
       const res = await fetch('/api/checkout', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        // added: send only the cart; server derives email from session
         body: JSON.stringify({ cart }),
       });
 
@@ -36,11 +31,9 @@ export default function CartPage() {
         throw new Error(data?.message || 'Checkout failed');
       }
 
-      // added: redirect straight to Stripe Checkout
       window.location.href = data.url;
     } catch (err) {
       console.error(err);
-      // optional: surface a toast or inline error UI here
     }
   }
 
