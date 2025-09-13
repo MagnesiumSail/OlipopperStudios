@@ -7,7 +7,10 @@ import { authOptions } from '@/lib/auth';
 import { prisma } from '@/lib/prisma';
 
 // DELETE /api/admin/products/:id
-export async function DELETE(req: NextRequest, { params }: { params: { id: string } }) {
+export async function DELETE(
+  req: NextRequest,
+  context: { params: { id: string } }
+) {
   const session = await getServerSession(authOptions);
 
   // Auth check: only allow admins
@@ -15,7 +18,7 @@ export async function DELETE(req: NextRequest, { params }: { params: { id: strin
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
   }
 
-  const productId = parseInt(params.id);
+  const productId = parseInt(context.params.id);
 
   // Validate the ID
   if (isNaN(productId)) {
@@ -42,7 +45,10 @@ export async function DELETE(req: NextRequest, { params }: { params: { id: strin
 }
 
 // PUT /api/admin/products/:id
-export async function PUT(req: NextRequest, { params }: { params: { id: string } }) {
+export async function PUT(
+  req: NextRequest,
+  context: { params: { id: string } } // <-- full object
+) {
   const session = await getServerSession(authOptions);
 
   // Only allow admins
@@ -50,7 +56,7 @@ export async function PUT(req: NextRequest, { params }: { params: { id: string }
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
   }
 
-  const productId = parseInt(params.id);
+  const productId = parseInt(context.params.id);
   if (isNaN(productId)) {
     return NextResponse.json({ error: 'Invalid product ID' }, { status: 400 });
   }
