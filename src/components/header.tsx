@@ -2,6 +2,8 @@
 import Nav from "./Nav";
 
 export default async function Header() {
+  console.log("NEXT_PUBLIC_BASE_URL:", process.env.NEXT_PUBLIC_BASE_URL);
+
   const res = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/api/public/site-flags`, {
     cache: "no-store",
   });

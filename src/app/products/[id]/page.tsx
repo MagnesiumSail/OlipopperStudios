@@ -37,6 +37,8 @@ export default async function ProductSinglePage(props: {
     `${process.env.NEXT_PUBLIC_BASE_URL}/api/public/site-flags`,
     { cache: "no-store" }
   );
+  console.log("NEXT_PUBLIC_BASE_URL:", process.env.NEXT_PUBLIC_BASE_URL);
+
   const { purchasingPaused } = await flagsRes.json();
 
   console.log("product.sizeGuide:", product.sizeGuide);

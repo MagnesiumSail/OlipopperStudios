@@ -17,6 +17,7 @@ export default function AdminDashboard() {
     let alive = true;
     (async () => {
       try {
+        console.log("NEXT_PUBLIC_BASE_URL:", process.env.NEXT_PUBLIC_BASE_URL);
         const res = await fetch('/api/public/site-flags', { cache: 'no-store' });
         const data = await res.json();
         if (alive) setPaused(!!data.purchasingPaused);
