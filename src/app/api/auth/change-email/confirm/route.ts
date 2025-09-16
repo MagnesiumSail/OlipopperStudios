@@ -42,18 +42,23 @@ export async function POST(req: Request) {
   }
 
   // Apply the change, clear pending fields, and log the user out everywhere
-  await prisma.$transaction([
-    prisma.user.update({
-      where: { id: user.id },
-      data: {
-        email: newEmail,
-        emailChangeTokenHash: null,
-        emailChangeTokenExpires: null,
-        emailChangeNew: null,
-      },
-    }),
-    prisma.session.deleteMany({ where: { userId: user.id } }), // if using Prisma Adapter sessions
-  ]);
+  await prisma.user.update({
+  where: { id: user.id },
+  data: {
+    email: newEmail,
+    emailChangeTokenHash: null,
+    emailChangeTokenExpires: null,
+    emailChangeNew: null,
+  },
+});
 
-  return NextResponse.json({ ok: true });
+// Best-effort: delete DB sessions only if the delegate exists (Prisma Adapter sessions)
+try {
+  // @ts-ignore - Delegate may not exist when using JWT sessions
+  await (prisma as any).session?.deleteMany?.({ where: { userId: user.id } });
+} catch {
+  // ignore
+}
+
+return NextResponse.json({ ok: true });
 }

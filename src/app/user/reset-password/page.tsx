@@ -1,12 +1,29 @@
+// src/app/user/reset-password/page.tsx
 "use client";
+import { Suspense, useState } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
-import { useState } from "react";
 
 export default function ResetPasswordPage() {
-  const params = useSearchParams();
+  return (
+    <Suspense
+      fallback={
+        <div className="max-w-md mx-auto mt-20 p-6 border rounded shadow">
+          <h1 className="text-2xl font-bold mb-4 text-center">Set a new password</h1>
+          <p className="text-sm">Loading…</p>
+        </div>
+      }
+    >
+      <ResetInner />
+    </Suspense>
+  );
+}
+
+function ResetInner() {
+  const params = useSearchParams(); // now inside Suspense
   const router = useRouter();
   const token = params.get("token") || "";
   const email = params.get("email") || "";
+
   const [pwd, setPwd] = useState("");
   const [confirm, setConfirm] = useState("");
   const [loading, setLoading] = useState(false);
@@ -69,3 +86,6 @@ export default function ResetPasswordPage() {
     </div>
   );
 }
+
+// If build still tries to prerender and complains, add this line below "use client":
+// export const dynamic = "force-dynamic";

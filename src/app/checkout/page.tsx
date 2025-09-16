@@ -98,3 +98,14 @@ export default function CheckoutPage() {
   );
 }
 */
+
+// File: src/app/checkout/page.tsx
+
+export default function CheckoutPage() {
+  return (
+    <div className="p-6 text-center">
+      <h1 className="text-2xl font-bold mb-4">Checkout (stub)</h1>
+      <p>This page is under construction.</p>
+    </div>
+  );
+}

@@ -1,9 +1,23 @@
+// src/app/user/confirm-email-change/page.tsx
 "use client";
-import { useEffect, useState } from "react";
+import { Suspense, useEffect, useState } from "react";
 import { useSearchParams } from "next/navigation";
 
 export default function ConfirmEmailChangePage() {
-  const params = useSearchParams();
+  return (
+    <Suspense fallback={
+      <div className="max-w-md mx-auto mt-20 p-6 border rounded shadow">
+        <h1 className="text-2xl font-bold mb-4 text-center">Email change</h1>
+        <p className="text-sm">Confirming…</p>
+      </div>
+    }>
+      <ConfirmInner />
+    </Suspense>
+  );
+}
+
+function ConfirmInner() {
+  const params = useSearchParams();              // now inside Suspense
   const token = params.get("token") || "";
   const [msg, setMsg] = useState("Confirming…");
 
