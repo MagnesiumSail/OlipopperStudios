@@ -8,6 +8,11 @@ export const dynamic = 'force-dynamic';
 export const revalidate = 0;
 export const runtime = 'nodejs';
 
+export default function Page({ params }: { params: { id: string } }) {
+  console.log('HIT /products/[id]', params);
+  return <pre>OK /products/[id]: {JSON.stringify(params)}</pre>;
+}
+
 interface Product {
   id: number;
   name: string;
@@ -21,7 +26,7 @@ interface Product {
 }
 
 
-export default async function ProductSinglePage(props: {
+/*export default async function ProductSinglePage(props: {
   params: Promise<{ id: string }>;
 }) {
   const { params } = props;
@@ -50,7 +55,7 @@ export default async function ProductSinglePage(props: {
   return (
     <div className="w-full flex justify-center bg-[#f9f7f8] pt-32">
       <div className="w-[90vw] max-w-[1800px] flex flex-col md:flex-row gap-12 py-12 md:py-0 px-2 md:px-0">
-        {/* === LEFT: Product images (vertical, take up most width) === */}
+
         <div className="flex-1 flex flex-col gap-8">
           <div className="bg-white rounded-2xl shadow-md border border-gray-100 p-4">
             {product.images && product.images.length > 0 ? (
@@ -73,7 +78,7 @@ export default async function ProductSinglePage(props: {
           </div>
         </div>
 
-        {/* === RIGHT: Sticky product info === */}
+
         <div className="w-full md:w-[32vw] max-w-sm md:pl-2 md:pr-4">
           <div className="md:sticky md:top-32 flex flex-col gap-5">
             <div className="bg-white rounded-2xl shadow-md border border-gray-100 p-6 flex flex-col gap-5">
@@ -84,9 +89,9 @@ export default async function ProductSinglePage(props: {
                 ${(product.price / 100).toFixed(2)}
               </p>
               <div className="...">
-                {/* ...Product images, details, add-to-cart, etc... */}
 
-                {/* === Add the size guide button/modal if there's a guide === */}
+
+
                 <div className="my-4">
                   {product.sizeGuide ? (
                     <SizeGuideRender
@@ -121,4 +126,4 @@ export default async function ProductSinglePage(props: {
       </div>
     </div>
   );
-}
+}*/

@@ -5,6 +5,10 @@ export const dynamic = 'force-dynamic';
 export const revalidate = 0;
 export const runtime = 'nodejs';
 
+export default function Page({ params }: { params: { id: string } }) {
+  console.log('HIT /products/[id]', params);
+  return <pre>OK /products/[id]: {JSON.stringify(params)}</pre>;
+}
 // Product interface (as before)
 interface Product {
   id: number;
@@ -17,7 +21,7 @@ interface Product {
   tags: string[];
 }
 
-export default async function ProductTagPage(props: { params: Promise<{ tag: string }> }) {
+/*export default async function ProductTagPage(props: { params: Promise<{ tag: string }> }) {
   const { tag } = await props.params;
 
   const res = await fetch(
@@ -30,11 +34,11 @@ export default async function ProductTagPage(props: { params: Promise<{ tag: str
   return (
     <div className="w-full flex justify-center bg-[#f9f7f8] pt-32 min-h-screen">
       <div className="w-[90vw] max-w-[1800px]">
-        {/* Modern heading, tags formatted */}
+
         <h1 className="text-3xl font-light font-sans tracking-tight mb-10 text-center text-gray-900">
           {`Products tagged: ${tag.charAt(0).toUpperCase() + tag.slice(1)}`}
         </h1>
-        {/* Elegant product grid */}
+
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-10">
           {products.map((product: Product) => (
             <a
@@ -43,7 +47,7 @@ export default async function ProductTagPage(props: { params: Promise<{ tag: str
               className="group bg-white rounded-2xl shadow-md border border-gray-100 p-5 flex flex-col h-full transition-all hover:shadow-xl hover:-translate-y-2 focus:ring-2 ring-black/10"
               style={{ textDecoration: "none" }}
             >
-              {/* Product Image */}
+
               <div className="aspect-[4/5] w-full mb-4 bg-gray-100 rounded-xl overflow-hidden flex items-center justify-center">
                 {product.images?.[0]?.url ? (
                   <img
@@ -74,4 +78,4 @@ export default async function ProductTagPage(props: { params: Promise<{ tag: str
       </div>
     </div>
   );
-}
+}*/
