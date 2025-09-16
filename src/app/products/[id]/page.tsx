@@ -4,6 +4,9 @@
 import { notFound } from "next/navigation";
 import ProductPurchaseSection from "@/components/ProductPurchaseSection";
 import SizeGuideRender from "@/components/sizeGuideRender";
+export const dynamic = 'force-dynamic';
+export const revalidate = 0;
+export const runtime = 'nodejs';
 
 interface Product {
   id: number;

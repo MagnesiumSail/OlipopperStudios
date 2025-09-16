@@ -1,6 +1,9 @@
 // === FILE: src/app/products/search/[tag]/page.tsx ===
 // This file renders a filtered product archive by tag (e.g., /products/search/dresses)
 import { notFound } from "next/navigation";
+export const dynamic = 'force-dynamic';
+export const revalidate = 0;
+export const runtime = 'nodejs';
 
 // Product interface (as before)
 interface Product {
