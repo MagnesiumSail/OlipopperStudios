@@ -25,13 +25,19 @@ export default async function ProductSinglePage(props: {
   const { params } = props;
   const { id } = await params;
 
-  const res = await fetch(`/api/products/${id}`, { cache: 'no-store' });
+  const res = await fetch(
+    `${process.env.NEXT_PUBLIC_BASE_URL || ""}/api/products/${id}`,
+    { cache: "no-store" }
+  );
 
   if (!res.ok) return notFound();
   const product = await res.json();
   if (!product) return notFound();
 
-  const flagsRes = await fetch(`/api/public/site-flags`, { cache: 'no-store' });
+  const flagsRes = await fetch(
+    `${process.env.NEXT_PUBLIC_BASE_URL || ""}/api/public/site-flags`,
+    { cache: 'no-store' }
+  );
   console.log("NEXT_PUBLIC_BASE_URL:", process.env.NEXT_PUBLIC_BASE_URL);
 
   const { purchasingPaused } = await flagsRes.json();
