@@ -4,14 +4,7 @@
 import { notFound } from "next/navigation";
 import ProductPurchaseSection from "@/components/ProductPurchaseSection";
 import SizeGuideRender from "@/components/sizeGuideRender";
-export const dynamic = 'force-dynamic';
-export const revalidate = 0;
-export const runtime = 'nodejs';
 
-export default function Page({ params }: { params: { id: string } }) {
-  console.log('HIT /products/[id]', params);
-  return <pre>OK /products/[id]: {JSON.stringify(params)}</pre>;
-}
 
 interface Product {
   id: number;
@@ -26,25 +19,19 @@ interface Product {
 }
 
 
-/*export default async function ProductSinglePage(props: {
+export default async function ProductSinglePage(props: {
   params: Promise<{ id: string }>;
 }) {
   const { params } = props;
   const { id } = await params;
 
-  const res = await fetch(
-    `${process.env.NEXT_PUBLIC_BASE_URL || ""}/api/products/${id}`,
-    { cache: "no-store" }
-  );
+  const res = await fetch(`/api/products/${id}`, { cache: 'no-store' });
 
   if (!res.ok) return notFound();
   const product = await res.json();
   if (!product) return notFound();
 
-  const flagsRes = await fetch(
-    `${process.env.NEXT_PUBLIC_BASE_URL}/api/public/site-flags`,
-    { cache: "no-store" }
-  );
+  const flagsRes = await fetch(`/api/public/site-flags`, { cache: 'no-store' });
   console.log("NEXT_PUBLIC_BASE_URL:", process.env.NEXT_PUBLIC_BASE_URL);
 
   const { purchasingPaused } = await flagsRes.json();
@@ -126,4 +113,4 @@ interface Product {
       </div>
     </div>
   );
-}*/
+}
