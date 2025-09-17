@@ -2,13 +2,7 @@
 // This file renders a filtered product archive by tag (e.g., /products/search/dresses)
 import { notFound } from "next/navigation";
 export const dynamic = 'force-dynamic';
-export const revalidate = 0;
-export const runtime = 'nodejs';
 
-export default function Page({ params }: { params: { id: string } }) {
-  console.log('HIT /products/[id]', params);
-  return <pre>OK /products/[id]: {JSON.stringify(params)}</pre>;
-}
 // Product interface (as before)
 interface Product {
   id: number;
@@ -21,7 +15,8 @@ interface Product {
   tags: string[];
 }
 
-/*export default async function ProductTagPage(props: { params: Promise<{ tag: string }> }) {
+
+export default async function ProductTagPage(props: { params: Promise<{ tag: string }> }) {
   const { tag } = await props.params;
 
   const res = await fetch(
@@ -78,4 +73,4 @@ interface Product {
       </div>
     </div>
   );
-}*/
+}
