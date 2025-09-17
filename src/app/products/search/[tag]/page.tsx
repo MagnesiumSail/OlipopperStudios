@@ -19,14 +19,16 @@ interface Product {
 export default async function ProductTagPage(props: { params: Promise<{ tag: string }> }) {
   console.log("Rendering tag page for a tag!");
   const { tag } = await props.params;
+  console.log(`Tag: ${tag}`);
 
   const res = await fetch(
     `${process.env.NEXT_PUBLIC_BASE_URL || ""}/api/products?tag=${encodeURIComponent(tag)}`,
     { cache: "no-store" }
   );
+  console.log(`Finished fetching!! Fetch status: ${res.status}`);
   if (!res.ok) return notFound();
   const products = await res.json();
-
+  console.log(`Number of products fetched: ${products.length}`);
   return (
     <div className="w-full flex justify-center bg-[#f9f7f8] pt-32 min-h-screen">
       <div className="w-[90vw] max-w-[1800px]">
