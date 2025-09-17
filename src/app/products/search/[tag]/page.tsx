@@ -1,7 +1,7 @@
 // === FILE: src/app/products/search/[tag]/page.tsx ===
 // This file renders a filtered product archive by tag (e.g., /products/search/dresses)
 import { notFound } from "next/navigation";
-export const dynamic = 'force-dynamic';
+export const dynamic = "force-dynamic";
 
 // Product interface (as before)
 interface Product {
@@ -15,24 +15,69 @@ interface Product {
   tags: string[];
 }
 
-
-export default async function ProductTagPage(props: { params: Promise<{ tag: string }> }) {
+export default async function ProductTagPage(props: {
+  params: Promise<{ tag: string }>;
+}) {
   console.log("Rendering tag page for a tag!");
-  const { tag } = await props.params;
-  console.log(`Tag: ${tag}`);
-
-  const res = await fetch(
-    `${process.env.NEXT_PUBLIC_BASE_URL || ""}/api/products?tag=${encodeURIComponent(tag)}`,
-    { cache: "no-store" }
-  );
-  console.log(`Finished fetching!! Fetch status: ${res.status}`);
-  if (!res.ok) return notFound();
-  const products = await res.json();
+  console.log("=== ProductTagPage Debug Start ===");
+  console.log("props:", props);
+  if (!props || !props.params) {
+    console.error("props or props.params is undefined!");
+  }
+  let tag: string | undefined;
+  try {
+    const params = await props.params;
+    console.log("params resolved from props.params:", params);
+    tag = params?.tag;
+    if (!tag) {
+      console.error("Tag is undefined after resolving params!");
+    }
+  } catch (err) {
+    console.error("Error resolving props.params:", err);
+  }
+  if (!tag) {
+    console.error("Tag is still undefined, aborting fetch.");
+    return notFound();
+  }
+  const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || "";
+  const fetchUrl = `${baseUrl}/api/products?tag=${encodeURIComponent(tag)}`;
+  console.log("Base URL:", baseUrl);
+  console.log("Fetch URL:", fetchUrl);
+  let res: Response | undefined;
+  try {
+    res = await fetch(fetchUrl, { cache: "no-store" });
+    console.log("Fetch response received.");
+    console.log("Fetch status:", res.status);
+    console.log("Fetch ok:", res.ok);
+    if (!res.ok) {
+      const text = await res.text();
+      console.error("Fetch failed. Response text:", text);
+    }
+  } catch (fetchErr) {
+    console.error("Fetch threw an error:", fetchErr);
+    return notFound();
+  }
+  if (!res) {
+    console.error("Fetch response is undefined!");
+    return notFound();
+  }
+  let products: Product[] = [];
+  try {
+    products = await res.json();
+    console.log("Products JSON parsed:", products);
+    if (!Array.isArray(products)) {
+      console.error("Products is not an array!", products);
+    }
+  } catch (jsonErr) {
+    console.error("Error parsing JSON from fetch response:", jsonErr);
+    return notFound();
+  }
   console.log(`Number of products fetched: ${products.length}`);
+  console.log("=== ProductTagPage Debug End ===");
+  if (!res.ok) return notFound();
   return (
     <div className="w-full flex justify-center bg-[#f9f7f8] pt-32 min-h-screen">
       <div className="w-[90vw] max-w-[1800px]">
-
         <h1 className="text-3xl font-light font-sans tracking-tight mb-10 text-center text-gray-900">
           {`Products tagged: ${tag.charAt(0).toUpperCase() + tag.slice(1)}`}
         </h1>
@@ -45,7 +90,6 @@ export default async function ProductTagPage(props: { params: Promise<{ tag: str
               className="group bg-white rounded-2xl shadow-md border border-gray-100 p-5 flex flex-col h-full transition-all hover:shadow-xl hover:-translate-y-2 focus:ring-2 ring-black/10"
               style={{ textDecoration: "none" }}
             >
-
               <div className="aspect-[4/5] w-full mb-4 bg-gray-100 rounded-xl overflow-hidden flex items-center justify-center">
                 {product.images?.[0]?.url ? (
                   <img
