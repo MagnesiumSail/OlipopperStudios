@@ -7,7 +7,7 @@ import { prisma } from "@/lib/prisma";
 export async function GET(req: Request) {
   const url = new URL(req.url);
   const tag = url.searchParams.get("tag");
-
+  console.log("Reached products route! Fetching all products");
   try {
     const products = await prisma.product.findMany({
       where: {

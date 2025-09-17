@@ -8,6 +8,7 @@ export async function GET(
   req: Request,
   context: { params: Promise<{ id: string }> }
 ) {
+  console.log("Reached id route! Fetching product details by ID");
   const { params } = context;
   const { id } = await params;
 

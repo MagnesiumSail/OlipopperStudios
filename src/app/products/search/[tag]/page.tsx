@@ -21,8 +21,9 @@ export const revalidate = 0; // or: export const dynamic = 'force-dynamic';
 type Props = { params: { tag: string } };
 
 export default async function ProductTagPage({ params }: Props) {
+  console.log("Rendering tag page for a tag!");
   const tag = decodeURIComponent(params.tag).trim().toLowerCase();
-
+  
   // Relative URL ensures auth/cookies/headers are forwarded by Next
   const url = `/api/products?tag=${encodeURIComponent(tag)}`;
   const res = await fetch(url, { cache: 'no-store' });
