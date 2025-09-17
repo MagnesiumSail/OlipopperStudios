@@ -3,12 +3,7 @@ import Nav from "./Nav";
 import { getPurchasingPaused } from "@/lib/siteSettings";
 
 export default async function Header() {
-    console.log("NEXT_PUBLIC_BASE_URL:", process.env.NEXT_PUBLIC_BASE_URL);
-
-  const res = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/api/public/site-flags`, {
-    cache: "no-store",
-  });
-  const { purchasingPaused } = await res.json();
+  const purchasingPaused = await getPurchasingPaused(); // no HTTP, no env, works locally and on Vercel
   return (
     <header className="border-b border-gray-200">
       {purchasingPaused && (
