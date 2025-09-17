@@ -24,10 +24,14 @@ export default async function ProductTagPage(props: {
 
   const url = `${process.env.NEXT_PUBLIC_BASE_URL}/api/products?tag=${encodeURIComponent(params.tag)}`;
   const res = await fetch(url, { cache: "no-store" });
+
   console.log("SSR_FETCH", url, res.status);
+
   if (!res.ok) {
-    console.log("BODY", await res.text());
+    const body = await res.clone().text();
+    console.log("BODY", body.slice(0, 400));
   }
+
   const products = await res.json();
 
   return (
