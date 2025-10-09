@@ -33,6 +33,13 @@ export default function UploadButton({
           button:
             "mt-4 bg-black text-white px-4 py-2 rounded hover:bg-gray-800 cursor-pointer",
         }}
+        content={{
+          label: "Click here or drag and drop to upload your files!",
+          button: ({ files }) =>
+            files.length === 0
+              ? "Waiting for file uploads"
+              : `Upload ${files.length} file${files.length > 1 ? "s" : ""}`,
+        }}
       />
 
       {uploadedUrls.length > 0 && (
