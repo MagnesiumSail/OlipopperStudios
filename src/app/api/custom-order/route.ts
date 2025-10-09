@@ -94,10 +94,12 @@ export async function POST(req: Request) {
     `;
 
     const response = await resend.emails.send({
-      from: process.env.EMAIL_FROM!,
-      to: process.env.EMAIL_TO!,
+      from: process.env.EMAIL_FROM!, // e.g. "Olipopper Studios <noreply@olipopperstudios.com>"
+      to: process.env.EMAIL_TO!, // your receiving inbox
+      replyTo: data.email ? [data.email] : undefined, // hit reply to reach the customer
       subject: `New Custom Order from ${data.name}`,
       html: htmlBody,
+      // bcc: ["archive@olipopperstudios.com"],       // optional
     });
 
     await prisma.order.create({
