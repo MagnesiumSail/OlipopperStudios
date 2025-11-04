@@ -47,7 +47,7 @@ export default async function ProductSinglePage(props: {
 
   return (
     <div className="w-full flex justify-center bg-[#f9f7f8] pt-32">
-      <div className="w-[90vw] max-w-[1800px] flex flex-col md:flex-row gap-12 py-12 md:py-0 px-2 md:px-0">
+      <div className="w-[50vw] max-w-[1800px] flex flex-col md:flex-row gap-12 py-12 md:py-0 px-2 md:px-0">
 
         <div className="flex-1 flex flex-col gap-8">
           <div className="bg-white rounded-2xl shadow-md border border-gray-100 p-4">
@@ -58,7 +58,7 @@ export default async function ProductSinglePage(props: {
                     key={i}
                     src={img.url}
                     alt={img.altText || product.name}
-                    className="w-full rounded-2xl object-cover max-h-[80vh] shadow-md border mb-4"
+                    className="relative w-full aspect-[4/5] bg-[#f8f8f8] rounded-2xl overflow-hidden shadow-md border mb-4"
                     style={{ background: "#f8f8f8" }}
                   />
                 )

@@ -74,7 +74,6 @@ export default function ProductsPage() {
                 <p className="text-sm text-gray-600 mb-4 line-clamp-3">
                   {product.description}
                 </p>
-                {/* Optionally, could put AddToCartButton here, but for a true "archive," just the link is good */}
               </div>
             </Link>
           ))}
